@@ -1,12 +1,28 @@
 import React from 'react';
-import SignIn from "./SignIn";
+
+import {
+    Route,
+    Switch,
+    Redirect,
+    withRouter
+} from "react-router-dom"
 
 import '../styles/App.sass';
 
-function App() {
+import SignIn from "./SignIn";
+import Home from "./Home";
+
+function App(props) {
+    const { history } = props
     return (
-        <SignIn/>
+        <div className="App">
+            <Switch>
+                <Route history={history} path='/signin' component={SignIn} />
+                <Route history={history} path='/home' component={Home} />
+                <Redirect from='/' to='/home'/>
+            </Switch>
+        </div>
     );
 }
 
-export default App;
+export default withRouter(App);
