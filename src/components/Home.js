@@ -12,6 +12,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import Header from "./Header";
 import Footer from "./Footer";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,20 +50,13 @@ const useStyles = makeStyles((theme) => ({
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-export default function Album() {
+function Home() {
     const classes = useStyles();
 
     return (
         <React.Fragment>
             <CssBaseline />
-            <AppBar position="relative">
-                <Toolbar>
-                    <CameraIcon className={classes.icon} />
-                    <Typography variant="h6" color="inherit" noWrap>
-                        Album layout
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+            <Header/>
             <main>
                 {/* Hero unit */}
                 <div className={classes.heroContent}>
@@ -129,3 +124,5 @@ export default function Album() {
         </React.Fragment>
     );
 }
+
+export default Home

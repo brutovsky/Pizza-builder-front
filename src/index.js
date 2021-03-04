@@ -4,16 +4,13 @@ import './styles/index.sass';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 
-import { Router } from "react-router-dom"
-import {createBrowserHistory} from 'history'
-
-const history = createBrowserHistory()
+import {BrowserRouter, Router} from "react-router-dom"
 
 ReactDOM.render(
   <React.StrictMode>
-      <Router history={history}>
+      <BrowserRouter>
           <App/>
-      </Router>
+      </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -12,13 +12,12 @@ import '../styles/App.sass';
 import SignIn from "./SignIn";
 import Home from "./Home";
 
-function App(props) {
-    const { history } = props
+function App() {
     return (
         <div className="App">
             <Switch>
-                <Route history={history} path='/signin' component={SignIn} />
-                <Route history={history} path='/home' component={Home} />
+                <Route exact path='/signin' component={SignIn} />
+                <Route exact path='/home' component={Home} />
                 <Redirect from='/' to='/home'/>
             </Switch>
         </div>
