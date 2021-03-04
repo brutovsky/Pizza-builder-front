@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Copyright from "./Copyright";
+import logo from "../resources/images/logo.png";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -42,6 +43,7 @@ export default function SignUp() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <img src={logo} />
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>

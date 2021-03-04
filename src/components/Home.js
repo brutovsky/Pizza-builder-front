@@ -10,7 +10,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Header from "./Header";
@@ -55,30 +55,28 @@ function Home() {
 
     return (
         <React.Fragment>
-            <CssBaseline />
+            <CssBaseline/>
             <Header/>
             <main>
                 {/* Hero unit */}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                            Album layout
+                            Pizza Layouts
                         </Typography>
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                            Something short and leading about the collection below—its contents, the creator, etc.
-                            Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-                            entirely.
+                            Choose the pizza you like and modify it to your tastes
                         </Typography>
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
                                     <Button variant="contained" color="primary">
-                                        Main call to action
+                                        Create your own pattern
                                     </Button>
                                 </Grid>
                                 <Grid item>
                                     <Button variant="outlined" color="primary">
-                                        Secondary action
+                                        Checkout
                                     </Button>
                                 </Grid>
                             </Grid>
@@ -93,23 +91,27 @@ function Home() {
                                 <Card className={classes.card}>
                                     <CardMedia
                                         className={classes.cardMedia}
-                                        image="https://source.unsplash.com/random"
+                                        image="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80"
                                         title="Image title"
                                     />
                                     <CardContent className={classes.cardContent}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            Heading
+                                            Pizza Four-Cheese
                                         </Typography>
                                         <Typography>
-                                            This is a media card. You can use this section to describe the content.
+                                            Tasty pizza description.
+                                            <p>Ingredients</p>
+                                            <p>
+                                                Cheese: Mozarella
+                                            </p>
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
                                         <Button size="small" color="primary">
-                                            View
+                                            Modify
                                         </Button>
                                         <Button size="small" color="primary">
-                                            Edit
+                                            Buy
                                         </Button>
                                     </CardActions>
                                 </Card>
