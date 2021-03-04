@@ -14,7 +14,8 @@ import {ReactComponent as LoginIcon} from '../resources/images/login.svg'
 const TITLE = 'Home'
 
 const SECTIONS = [
-    {title: 'Sign In', href: '/signin', Icon: LoginIcon},
+    {title: 'Sign In', href: '/signin'},
+    {title: 'Sign Up', href: '/signup'},
 ]
 
 const useStyles = makeStyles((theme) => ({
@@ -35,16 +36,16 @@ export default function Header() {
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/home">
                     <LocalPizza className={classes.icon}/>
                 </IconButton>
+
                 <Typography variant="h6" className={classes.title}>
                     Pizza Builder Home
                 </Typography>
-                {SECTIONS.map(({title, href, Icon}) => {
-                    return <Link className='SectionNavigation-Item Section' to={href}>
-                        <Button color="inherit">{title}</Button>
-                    </Link>
+                {SECTIONS.map(({title, href}) => {
+                    return <Button color={"inherit"} href={href} className={classes.menuButton}
+                                   renderAs="Button"><span>{title}</span></Button>
                 })}
             </Toolbar>
         </AppBar>
