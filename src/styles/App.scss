@@ -1,0 +1,21 @@
+@use 'base';
+
+$font-stack: Roboto, sans-serif;
+$primary-color: #511845;
+
+body{
+  font-family: $font-stack;
+  color: $primary-color;
+}
+
+.App{
+  text-align: center;
+  align-content: center;
+  background-color: $primary-color;
+}
+
+.App-logo{
+  height: 40vmin;
+  pointer-events: none;
+}
+
