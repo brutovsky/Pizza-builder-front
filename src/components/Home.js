@@ -15,6 +15,10 @@ import Container from '@material-ui/core/Container';
 
 import Header from "./Header";
 import Footer from "./Footer";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -41,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
     },
     cardContent: {
         flexGrow: 1,
+    },
+    cardActions:{
+        alignContent:"center",
+        justifyContent:"center"
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -96,24 +104,41 @@ function Home() {
                                     />
                                     <CardContent className={classes.cardContent}>
                                         <Typography gutterBottom variant="h5" component="h2">
-                                            Pizza Four-Cheese
+                                            Pizza Four-Cheese 🥦
                                         </Typography>
-                                        <Typography>
+                                        <Divider/>
+                                        <Typography variant={"body1"}>
                                             Tasty pizza description.
-                                            <p>Ingredients</p>
-                                            <p>
-                                                Cheese: Mozarella
-                                            </p>
                                         </Typography>
+                                        <Divider/>
+                                        <Typography variant={"body2"}>
+                                            <p><b>🧀 Mozarella, Feta, Parmezan, Cheddar</b></p>
+                                            <p><b>🍖 No</b></p>
+                                            <p><b>🥣 Al`fredo</b></p>
+                                        </Typography>
+
+                                        <ButtonGroup variant="outlined" color="primary"
+                                                     aria-label="contained primary button group">
+                                            <Button variant={"contained"}>Small</Button>
+                                            <Button>Medium</Button>
+                                            <Button>Large</Button>
+                                        </ButtonGroup>
+
                                     </CardContent>
-                                    <CardActions>
-                                        <Button size="small" color="primary">
+
+                                    <CardActions className={classes.cardActions} disableSpacing={false}>
+                                        <Typography color={"secondary"} variant={"body1"}>
+                                            <b><i>Price: 99.9$</i></b>
+                                        </Typography>
+                                        <Button size="large" color="primary">
                                             Modify
                                         </Button>
-                                        <Button size="small" color="primary">
+                                        <Button size="large" color="primary">
                                             Buy
                                         </Button>
                                     </CardActions>
+
+
                                 </Card>
                             </Grid>
                         ))}

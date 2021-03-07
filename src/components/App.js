@@ -14,6 +14,7 @@ import Home from "./Home";
 import SignUp from "./SignUp";
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from "./Theme";
+import PizzaBuilder from "./PizzaBuilder";
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route exact path='/signin' component={SignIn} />
                     <Route exact path='/signup' component={SignUp} />
                     <Route exact path='/home' component={Home} />
+                    <Route exact path='/build' component={PizzaBuilder} />
                     <Redirect from='/' to='/home'/>
                 </Switch>
             </ThemeProvider>

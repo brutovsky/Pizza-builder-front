@@ -14,6 +14,7 @@ import {ReactComponent as LoginIcon} from '../resources/images/login.svg'
 const TITLE = 'Home'
 
 const SECTIONS = [
+    {title: 'BUILD', href: '/build'},
     {title: 'Sign In', href: '/signin'},
     {title: 'Sign Up', href: '/signup'},
 ]
@@ -41,7 +42,7 @@ export default function Header() {
                 </IconButton>
 
                 <Typography variant="h6" className={classes.title}>
-                    Pizza Builder Home
+                    Pizza Builder
                 </Typography>
                 {SECTIONS.map(({title, href}) => {
                     return <Button color={"inherit"} href={href} className={classes.menuButton}
