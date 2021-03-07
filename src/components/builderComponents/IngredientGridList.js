@@ -22,9 +22,6 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
         overflow: 'hidden',
     },
     gridList: {
@@ -34,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
         color: 'rgba(255, 255, 255, 0.54)',
         justifyContent:'center'
     },
+    tile:{
+
+    }
 }));
 
 export default function IngredientGridList(props) {
@@ -46,16 +46,16 @@ export default function IngredientGridList(props) {
         <div className={classes.root}>
             <GridList cellHeight={180} className={classes.gridList} cols={isPageWide1400 ? 3 : (isPageWide600 ? 2 : 1)}>
                 {props.ingredients.map((ingr) => (
-                    <GridListTile key={ingr.name} >
-                        <img src={chisi} alt={ingr.title} />
+                    <GridListTile key={ingr.name} className={classes.tile}>
+                        <img src={ingr.url} alt={ingr.description} />
                         <GridListTileBar
-                            title={ingr.title}
+                            title={ingr.name}
                             actionIcon={
                                 <ButtonGroup>
-                                    <IconButton className={classes.icon}>
+                                    <IconButton className={classes.icon} onClick={(e) => props.plusCallback(ingr.ingredient(1))}>
                                         <Add />
                                     </IconButton>
-                                    <IconButton className={classes.icon}>
+                                    <IconButton className={classes.icon} onClick={(e) => props.minusCallback(ingr.ingredient(1))}>
                                         <Remove />
                                     </IconButton>
                                 </ButtonGroup>

@@ -62,76 +62,19 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const cards = [
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-    {
-        'name' : 'Cheddare',
-        'title' : 'Chesee cheese',
-        'howMany': 0
-    },
-];
-
-export default function SimpleTabs() {
+export default function IngredientGroupTabs(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const tabPanel = (index, ingredients) => {
+        return <TabPanel value={value} index={index}>
+            <IngredientGridList plusCallback={props.plusCallback} minusCallback={props.minusCallback} ingredients={ingredients} />
+        </TabPanel>
+    }
 
     return (
         <div className={classes.root}>
@@ -150,31 +93,11 @@ export default function SimpleTabs() {
                     <Tab className={classes.tab} label="🍞" {...a11yProps(4)} />
                 </Tabs>
             </AppBar>
-            <TabPanel value={value} index={0}>
-                <IngredientGridList ingredients={cards} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <IngredientGridList ingredients={cards} />
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                <IngredientGridList ingredients={cards} />
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-                <IngredientGridList ingredients={cards} />
-            </TabPanel>
-            <TabPanel value={value} index={4}>
-                <IngredientGridList ingredients={cards} />
-            </TabPanel>
+            {tabPanel(0,props.ingredients.filter((it) => it.group === 'cheese'))}
+            {tabPanel(1,props.ingredients.filter((it) => it.group === 'meat'))}
+            {tabPanel(2,props.ingredients.filter((it) => it.group === 'vegetables'))}
+            {tabPanel(3,props.ingredients.filter((it) => it.group === 'sauce'))}
+            {tabPanel(4,props.ingredients.filter((it) => it.group === 'side'))}
         </div>
     );
 }
-
-/*
-<Grid container spacing={4}>
-                    {cards.map((card) => (
-                        <Grid item key={card} xs={12} sm={6} md={4}>
-                            <IngredientCard name={card} description={card}/>
-                        </Grid>
-                    ))}
-                </Grid>
- */

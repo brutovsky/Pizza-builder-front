@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -43,23 +43,28 @@ export default function IngredientInPizza(props) {
     const classes = useStyles();
     const theme = useTheme();
 
+    useEffect(() => {
+        // Update the document title using the browser API
+        document.title = `You clicked ${props.ingr.howMany} times`;
+    });
+
     return (
         <Card className={classes.card}>
 
             <CardMedia
                 className={classes.media}
-                image={'https://www.wisconsinrivermeats.com/prodimages/cheddar-cheese.jpg'}
-                title="Image title"
+                image={props.ingr.url}
+                title={props.ingr.name}
             >
                 <Box mx={4.2} border={1}  className={classes.howManyBox} borderRadius="50%">
                     <Typography className={classes.howManyText} variant={"body2"}>
-                        10
+                        {props.ingr.howMany}
                     </Typography>
                 </Box>
-                <IconButton aria-label="settings">
+                <IconButton onClick={(e) => props.minusCallback(props.ingr)} >
                     <RemoveCircle/>
                 </IconButton>
-                <IconButton aria-label="settings">
+                <IconButton onClick={(e) => props.plusCallback(props.ingr)}>
                     <AddCircle/>
                 </IconButton>
             </CardMedia>
