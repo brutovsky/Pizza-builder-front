@@ -28,6 +28,14 @@ import IngredientInPizzaCard from "./builderComponents/IngredientInPizzaCard";
 import IngredientInPizza from "../models/IngredientInPizza";
 import Ingredient from "../models/Ingredient";
 
+import {useSelector, useDispatch} from 'react-redux'
+import {
+    decrement,
+    increment,
+    incrementByAmount,
+    selectCount
+} from '../features/basket/basketSlice'
+
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -85,6 +93,9 @@ const testIngr4 = new IngredientInPizza('Tomato', 1, 'https://upload.wikimedia.o
 function PizzaBuilder() {
 
     const [ingredients, setIngredients] = useState([testIngr1, testIngr2, testIngr3, testIngr4]);
+
+    const count = useSelector(selectCount)
+    const dispatch = useDispatch()
 
     const addIngredient = (ingr) => {
         setIngredients(oldIngredients => [...oldIngredients, ingr]);
@@ -154,6 +165,24 @@ function PizzaBuilder() {
                         </Container>
                     </Grid>
                 </Grid>
+
+                <Grid container spacing={0}>
+                    <Grid item sm={12} xs={12} md={6} lg={6}>
+                        <Container>
+                            <Button onClick={() => dispatch(increment())} variant={"contained"}>
+                                increment
+                            </Button>
+                        </Container>
+                    </Grid>
+                    <Grid item sm={12} xs={12} md={6} lg={6}>
+                        <Container>
+                            <Typography>
+                                {count.pizzaInBasket}
+                            </Typography>
+                        </Container>
+                    </Grid>
+                </Grid>
+
             </main>
             <Footer/>
         </React.Fragment>
