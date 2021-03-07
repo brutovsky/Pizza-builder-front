@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'hidden',
     },
     gridList: {
-        maxHeight: '77vh'
+        height: '62vh'
     },
     icon: {
         color: 'rgba(255, 255, 255, 0.54)',

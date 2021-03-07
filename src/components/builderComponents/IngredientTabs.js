@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
     tab: {
         minWidth: 40, // a number of your choice
-        maxWidth:150,
+        maxWidth: 150,
         width: '20%', // a number of your choice
     }
 }));

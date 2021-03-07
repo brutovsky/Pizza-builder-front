@@ -14,6 +14,7 @@ import {Box} from "@material-ui/core";
 
 import theme from './Theme'
 import Tooltip from "@material-ui/core/Tooltip";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const TITLE = 'Home'
 
@@ -28,9 +29,11 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     menuButton: {
+        minWidth:80,
         marginRight: theme.spacing(2),
     },
     basket:{
+        minWidth:80,
         marginRight: theme.spacing(2),
         backgroundColor: theme.palette.primary.light,
         '&:hover': {
@@ -41,37 +44,37 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
     },
-    howManyBox: {
-        width:30,
-        height:30,
-        alignContent: "center",
-        backgroundColor: theme.palette.primary.dark
-    },
     howManyText: {
-        paddingLeft: 8,
         textAlign: 'center',
+    },
+    basketIcon: {
+        paddingRight: 5
     }
 }));
 
 export default function Header() {
     const classes = useStyles();
 
+    let isPageWide1400 = useMediaQuery('(min-width: 1400px)')
+    let isPageWide700 = useMediaQuery('(min-width: 700px)')
+    let isPageWide400 = useMediaQuery('(min-width: 400px)')
+
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" href="/home">
+                <IconButton edge="start"  color="inherit" aria-label="menu" href="/home">
                     <LocalPizza className={classes.icon}/>
                 </IconButton>
 
                 <Typography variant="h6" className={classes.title}>
-                    Pizza Builder
+                    {isPageWide700 ? 'Pizza Builder' : ''}
                 </Typography>
 
 
                 <Tooltip title="10 items in the basket">
                     <Button color={"inherit"} className={classes.basket} variant="raised"
                             renderAs="Button" >
-                        <ShoppingBasket className={classes.icon}/>
+                        {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
                         <Typography className={classes.howManyText} variant={"h5"}>
                             999.5$
                         </Typography>
@@ -79,10 +82,10 @@ export default function Header() {
                 </Tooltip>
 
 
-                {SECTIONS.map(({title, href}) => {
+                {isPageWide400 ? SECTIONS.map(({title, href}) => {
                     return <Button color={"inherit"} href={href} className={classes.menuButton}
                                    renderAs="Button"><span>{title}</span></Button>
-                })}
+                }) : ''}
             </Toolbar>
         </AppBar>
     );

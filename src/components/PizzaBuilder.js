@@ -35,6 +35,7 @@ import {
     incrementByAmount,
     selectCount
 } from '../features/basket/basketSlice'
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -49,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'top',
         width: '100%',
-        height: '83vh'
+        minHeight: '53vh',
+        maxHeight: '83vh'
     },
     cardGrid: {
         paddingTop: theme.spacing(8),
@@ -60,19 +62,30 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
     },
-    cardMedia: {
-        paddingTop: '56.25%', // 16:9
-    },
     cardContent: {
         flexGrow: 1,
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(6),
+        //padding: theme.spacing(6),
     },
     root: {
+        paddingTop: theme.spacing(4),
         backgroundColor: theme.palette.background.paper,
     },
+    pizzaInfo: {
+        paddingBottom: theme.spacing(2),
+    },
+    pizzaButton: {
+        height: '100%',
+    },
+    textField: {
+        width: "100%"
+    },
+    priceText: {
+        paddingLeft: theme.spacing(5),
+        paddingTop: theme.spacing(2),
+    }
 }));
 
 const ingredientsList = [
@@ -83,6 +96,16 @@ const ingredientsList = [
     new Ingredient('Chicken', 'meat', '', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-IdhPsX5dHqJNkDuGs4aJh3IKZw1ZVspECQ&usqp=CAU'),
     new Ingredient('Tomato', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
     new Ingredient('Ananas', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
+    new Ingredient('Tomato1', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    new Ingredient('Ananas2', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
+    new Ingredient('Tomato3', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    new Ingredient('Ananas4', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
+    new Ingredient('Tomato5', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    new Ingredient('Ananas6', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
+    new Ingredient('Tomato7', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    new Ingredient('Ananas8', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
+    new Ingredient('Tomato9', 'vegetables', '', 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg'),
+    new Ingredient('Ananas10', 'vegetables', '', 'https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'),
 ];
 
 const testIngr1 = new IngredientInPizza('Cheddar', 5, 'https://www.wisconsinrivermeats.com/prodimages/cheddar-cheese.jpg');
@@ -109,7 +132,10 @@ function PizzaBuilder() {
         let newIngredients = [...ingredients];
         let toChange = newIngredients.find(it => it.name === ingr.name);
         if (toChange === undefined) {
-            newIngredients.push(ingr);
+            if (newIngredients.length >= 12) {
+                alert('Maximum amount of ingredints: 12')
+            } else
+                newIngredients.push(ingr);
         } else toChange.plus();
         setIngredients(newIngredients);
     };
@@ -139,18 +165,27 @@ function PizzaBuilder() {
             <CssBaseline/>
             <Header/>
             <main className={classes.root}>
-                <br/>
                 <Grid container spacing={0}>
                     <Grid item sm={12} xs={12} md={6} lg={6}>
                         <Container>
-                            <div className={classes.heroContent}>
-                                <Container maxWidth="sm">
-                                    <Typography component="h1" variant="h2" align="center" color="textPrimary"
-                                                gutterBottom>
-                                        Pizza Builder
+                            <Grid container spacing={3} className={classes.pizzaInfo}>
+                                <Grid item sm={4} xs={4} md={2} lg={2}>
+                                    <Typography variant={"h6"} className={classes.priceText}>
+                                        <b>88.90$</b>
                                     </Typography>
-                                </Container>
-                            </div>
+                                </Grid>
+                                <Grid item sm={8} xs={8} md={5} lg={5}>
+                                    <form noValidate autoComplete="off">
+                                        <TextField className={classes.textField} label="Pizza name" variant="filled"/>
+                                    </form>
+                                </Grid>
+                                <Grid item sm={12} xs={12} md={5} lg={5}>
+                                    <Button variant={"outlined"} color={"primary"} fullWidth={true}
+                                            className={classes.pizzaButton}>
+                                        Save pattern
+                                    </Button>
+                                </Grid>
+                            </Grid>
                             <Container className={classes.pizzaBuilder}>
                                 <Grid container spacing={3}>
                                     {ingredients.map((test) => ingredientTile(test))}
@@ -165,24 +200,9 @@ function PizzaBuilder() {
                         </Container>
                     </Grid>
                 </Grid>
+                <br/>
 
-                <Grid container spacing={0}>
-                    <Grid item sm={12} xs={12} md={6} lg={6}>
-                        <Container>
-                            <Button onClick={() => dispatch(increment())} variant={"contained"}>
-                                increment
-                            </Button>
-                        </Container>
-                    </Grid>
-                    <Grid item sm={12} xs={12} md={6} lg={6}>
-                        <Container>
-                            <Typography>
-                                {count.pizzaInBasket}
-                            </Typography>
-                        </Container>
-                    </Grid>
-                </Grid>
-
+                <br/>
             </main>
             <Footer/>
         </React.Fragment>
