@@ -77,12 +77,12 @@ export default function Header() {
                 </Typography>
 
 
-                <Tooltip title="10 items in the basket">
-                    <Button color={"inherit"} className={classes.basket} variant="raised"
+                <Tooltip title="4 items in the basket">
+                    <Button color={"inherit"} href={'/checkout'} className={classes.basket} variant="raised"
                             renderAs="Button" >
                         {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
                         <Typography className={classes.howManyText} variant={"h5"}>
-                            999.5$
+                            $34.06
                         </Typography>
                     </Button>
                 </Tooltip>
