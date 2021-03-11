@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,10 +11,34 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import logo from '../resources/images/logo.png'; // Tell webpack this JS file uses this image
 
 import Copyright from './Copyright'
+import axios from "axios";
+
+import API from '../api/Api';
+import {useDispatch, useSelector} from "react-redux";
+
+import {unwrapResult} from '@reduxjs/toolkit'
+
+import { useHistory } from "react-router-dom";
+
+import {
+    decrement,
+    increment,
+    incrementByAmount,
+    incrementAsync,
+    selectCount
+} from '../features/test/Counter'
+
+import {
+    signInUser,
+} from '../features/auth/Auth'
+
+import {
+    resetToken
+} from '../features/auth/Auth'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,15 +74,50 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
     const classes = useStyles();
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    //const token = useSelector(state => state.token);
+    const dispatch = useDispatch();
+
+    const history = useHistory();
+
+    const performSignIn = () => {
+
+        console.log(dispatch)
+
+        setLoading(true)
+
+        dispatch(
+            signInUser({
+                email: email,
+                password: password
+            })
+        ).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult)
+                history.push("/home");
+                setLoading(false)
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError)
+                setLoading(false)
+            })
+
+        dispatch(resetToken())
+    }
+
     return (
         <Grid container component="main" className={classes.root}>
-            <CssBaseline />
-            <Grid item xs={false} sm={4} md={7} className={classes.image} />
+            <CssBaseline/>
+            <Grid item xs={false} sm={4} md={7} className={classes.image}/>
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>
-                    <img src={logo} />
+                    <img src={logo}/>
                     <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
+                        <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in
@@ -74,6 +133,7 @@ export default function SignIn() {
                             name="email"
                             autoComplete="email"
                             autoFocus
+                            onChange={e => setEmail(e.target.value)}
                         />
                         <TextField
                             variant="outlined"
@@ -85,17 +145,21 @@ export default function SignIn() {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={e => setPassword(e.target.value)}
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
+                            control={<Checkbox value="remember" color="primary"/>}
                             label="Remember me"
                         />
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            disabled={loading}
+                            onClick={e => {
+                                performSignIn()
+                            }}
                         >
                             Sign In
                         </Button>
@@ -112,7 +176,7 @@ export default function SignIn() {
                             </Grid>
                         </Grid>
                         <Box mt={5}>
-                            <Copyright />
+                            <Copyright/>
                         </Box>
                     </form>
                 </div>

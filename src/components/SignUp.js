@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,6 +15,12 @@ import Container from '@material-ui/core/Container';
 
 import Copyright from "./Copyright";
 import logo from "../resources/images/logo.png";
+import {useDispatch} from "react-redux";
+
+import {
+    signUpUser,
+} from '../features/auth/Auth'
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -39,6 +45,38 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+
+    const dispatch = useDispatch();
+
+    const performSignUp = () => {
+
+        console.log(dispatch)
+
+        dispatch(
+            signUpUser({
+                name: name,
+                email: email,
+                phone: '',
+                address:{
+                    city: '',
+                    street: '',
+                    build: 0,
+                    flat: 0
+                },
+                password:password
+            })
+        ).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult)
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError)
+            })
+    }
+
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -55,24 +93,14 @@ export default function SignUp() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 autoComplete="fname"
-                                name="firstName"
+                                name="name"
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="firstName"
-                                label="First Name"
+                                id="name"
+                                label="Name"
                                 autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="lname"
+                                onChange={e => setName(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -84,6 +112,7 @@ export default function SignUp() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                onChange={e => setEmail(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -96,21 +125,24 @@ export default function SignUp() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                onChange={e => setPassword(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel
                                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I want to receive inspiration, marketing promotions and updates via email."
+                                label="I want to receive new pizza patter, marketing promotions and updates via email."
                             />
                         </Grid>
                     </Grid>
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={e => {
+                            performSignUp()
+                        }}
                     >
                         Sign Up
                     </Button>

@@ -19,6 +19,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 const TITLE = 'Home'
 
 const SECTIONS = [
+    {title: 'User', href: '/userpage'},
     {title: 'BUILD', href: '/build'},
     {title: 'Sign In', href: '/signin'},
     {title: 'Sign Up', href: '/signup'},
