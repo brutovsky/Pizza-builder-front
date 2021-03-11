@@ -15,11 +15,12 @@ import {Box} from "@material-ui/core";
 import theme from './Theme'
 import Tooltip from "@material-ui/core/Tooltip";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Avatar from "@material-ui/core/Avatar";
+import deepOrange from "@material-ui/core/colors/deepOrange";
 
 const TITLE = 'Home'
 
 const SECTIONS = [
-    {title: 'User', href: '/userpage'},
     {title: 'BUILD', href: '/build'},
     {title: 'Sign In', href: '/signin'},
     {title: 'Sign Up', href: '/signup'},
@@ -50,7 +51,11 @@ const useStyles = makeStyles((theme) => ({
     },
     basketIcon: {
         paddingRight: 5
-    }
+    },
+    orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
 }));
 
 export default function Header() {
@@ -87,6 +92,10 @@ export default function Header() {
                     return <Button color={"inherit"} href={href} className={classes.menuButton}
                                    renderAs="Button"><span>{title}</span></Button>
                 }) : ''}
+
+                <Button href={'/userpage'}><span> <Avatar className={classes.orange} >P</Avatar></span></Button>
+
+
             </Toolbar>
         </AppBar>
     );

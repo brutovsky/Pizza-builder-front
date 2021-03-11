@@ -26,6 +26,8 @@ import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 
+import MuiPhoneInput from 'material-ui-phone-number'
+
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -64,6 +66,19 @@ const useStyles = makeStyles((theme) => ({
     },
     avatarBox:{
         width: 125,
+    },
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        minWidth: "80%",
+    },
+    emailTextField:{
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 233,
+    },
+    saveButton:{
+
     }
 }));
 
@@ -71,6 +86,18 @@ export default function UserPage() {
     const classes = useStyles();
 
     const dispatch = useDispatch()
+
+    const [testUser,setTestUser] = useState({
+        name: 'pasha',
+        email: 'pasha@gmail.com',
+        phone: '380688846359',
+        address:{
+            city: 'Kyiv',
+            street: 'Marina Cvetaeva',
+            build: 14,
+            flat: 521
+        },
+    })
 
     return (
         <React.Fragment>
@@ -92,16 +119,64 @@ export default function UserPage() {
                                     </Container>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <form noValidate autoComplete="off">
-                                        <TextField className={classes.textField} label="Pizza name" variant="filled"/>
-                                    </form>
+                                    <MuiPhoneInput defaultCountry={'ua'} value={testUser.phone} onChange={(e) => {console.log(e)}}/>
                                 </Grid>
+
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Email"
+                                        defaultValue={testUser.email}
+                                        className={classes.emailTextField}
+                                        helperText="Enter your email"
+                                    />
+                                </Grid>
+
+                                <Divider />
+                                <Grid item xs={12}>
+                                    <Typography variant={"h3"}>
+                                        Your Address
+                                    </Typography>
+                                </Grid>
+
+
+                                <div>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label="City"
+                                            defaultValue={testUser.address.city}
+                                            className={classes.textField}
+                                            helperText="Enter your city"
+                                        />
+                                    </Grid>
+
+                                    <TextField
+                                        label="Street"
+                                        defaultValue={testUser.address.street}
+                                        className={classes.textField}
+                                        helperText="Enter your street"
+                                    />
+                                    <TextField
+                                        label="Building"
+                                        defaultValue={testUser.address.build}
+                                        className={classes.textField}
+                                        helperText="Enter your building"
+                                    />
+                                    <TextField
+                                        label="Flat"
+                                        defaultValue={testUser.address.flat}
+                                        className={classes.textField}
+                                        helperText="Enter your flat"
+                                    />
+                                </div>
+
+
                                 <Grid item xs={12} >
-                                    <Button variant={"outlined"} color={"primary"} fullWidth={true}
-                                            className={classes.pizzaButton}>
-                                        Save pattern
+                                    <Button variant={"outlined"} color={"primary"}
+                                            className={classes.saveButton}>
+                                        Save changes
                                     </Button>
                                 </Grid>
+
                             </Grid>
                         </Container>
                     </Grid>
