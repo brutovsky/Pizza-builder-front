@@ -15,9 +15,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import logo from '../resources/images/logo.png'; // Tell webpack this JS file uses this image
 
 import Copyright from './Copyright'
-import axios from "axios";
-
-import API from '../api/Api';
 import {useDispatch, useSelector} from "react-redux";
 
 import {unwrapResult} from '@reduxjs/toolkit'

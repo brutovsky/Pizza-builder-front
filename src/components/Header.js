@@ -7,7 +7,7 @@ import {HouseOutlined, LocalPizza, ShoppingBasket, ExitToApp} from "@material-ui
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
-import {Link} from "react-router-dom"
+import {Link, useHistory} from "react-router-dom"
 
 import {ReactComponent as LoginIcon} from '../resources/images/login.svg'
 import {Box} from "@material-ui/core";
@@ -22,7 +22,8 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {
     signOut,
-    selectUser, signInUser
+    selectUser,
+    signInUser
 } from '../features/auth/Auth'
 
 const TITLE = 'Home'
@@ -74,14 +75,16 @@ export default function Header() {
     const dispatch = useDispatch();
 
     const user = useSelector(selectUser);
-    console.log(user)
-    let isPageWide1400 = useMediaQuery('(min-width: 1400px)')
-    let isPageWide700 = useMediaQuery('(min-width: 700px)')
-    let isPageWide400 = useMediaQuery('(min-width: 400px)')
+
+    const history = useHistory();
+
+    let isPageWide1400 = useMediaQuery('(min-width: 1400px)');
+    let isPageWide700 = useMediaQuery('(min-width: 700px)');
+    let isPageWide400 = useMediaQuery('(min-width: 400px)');
 
     const performSignOut = () => {
-        console.log("HA")
-        dispatch(signOut())
+        dispatch(signOut());
+        history.push("/home");
     }
 
     return (

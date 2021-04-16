@@ -25,15 +25,23 @@ import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 
-import MuiPhoneInput from 'material-ui-phone-number'
+import MuiPhoneInput from 'material-ui-phone-number';
+import MuiAlert from '@material-ui/lab/Alert';
+
+import CloseIcon from '@material-ui/icons/Close';
 
 import {useDispatch, useSelector} from "react-redux";
 
 import {
+    updateUser,
     selectStatus,
     selectUser,
     selectError
 } from '../features/auth/Auth'
+import {unwrapResult} from "@reduxjs/toolkit";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import {snack} from "./utils/CustomSnackBar";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -71,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(12),
         height: theme.spacing(12),
     },
-    avatarBox:{
+    avatarBox: {
         width: 125,
     },
     textField: {
@@ -79,36 +87,63 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(1),
         minWidth: "80%",
     },
-    emailTextField:{
+    emailTextField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: 233,
     },
-    saveButton:{
-
-    }
+    saveButton: {}
 }));
 
 export default function UserPage() {
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    //
+
     const classes = useStyles();
 
     const dispatch = useDispatch();
 
+    const updateStatus = useSelector(selectStatus);
+
     const user = useSelector(selectUser);
 
-    console.log("user - " + user.name)
+    const [editUser, setEditUser] = useState(user);
 
-    const [testUser,setTestUser] = useState({
-        name: 'pasha',
-        email: 'pasha@gmail.com',
-        phone: '380688846359',
-        address:{
-            city: 'Kyiv',
-            street: 'Marina Cvetaeva',
-            build: 14,
-            flat: 521
-        },
-    })
+    const updateEditUser = (field, val) => {
+        setEditUser(prevEditUser => ({
+            ...prevEditUser,
+            [field]: val
+        }))
+    }
+
+    const updateEditUserAddress = (field, val) => {
+        setEditUser(prevEditUser => ({
+            ...prevEditUser,
+            address: {...prevEditUser.address, [field]: val}
+        }))
+    }
+
+    const dispatchUpdateUser = () => {
+        console.log(editUser)
+        dispatch(
+            updateUser(editUser)
+        ).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult);
+                setSnackSeverity("success");
+                setSnackText("User info successfully updated !");
+                setSnackOpen(true);
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError);
+                setSnackSeverity("error");
+                setSnackText("Something went wrong :/");
+                setSnackOpen(true);
+            })
+    }
 
     return (
         <React.Fragment>
@@ -119,32 +154,45 @@ export default function UserPage() {
                     <Grid item xs={12}>
                         <Container>
                             <Grid container spacing={3} className={classes.container}>
+                                {snack(snackOpen,setSnackOpen,snackSeverity,snackText)}
                                 <Grid item xs={12}>
                                     <Container className={classes.avatarBox}>
-                                        <Avatar className={classes.orange}>{user.name.charAt(0).toUpperCase()}</Avatar>
+                                        <Avatar
+                                            className={classes.orange}>{editUser.name.charAt(0).toUpperCase()}</Avatar>
                                     </Container>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <MuiPhoneInput defaultCountry={'ua'} value={user.phone} onChange={(e) => {console.log(e)}}/>
+                                    <MuiPhoneInput defaultCountry={'ua'}
+                                                   value={editUser.phone}
+                                                   onChange={(e) => {
+                                                       updateEditUser('phone', e)
+                                                   }}
+                                    />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         label="Your name"
-                                        defaultValue={user.name}
+                                        defaultValue={editUser.name}
                                         className={classes.emailTextField}
                                         helperText="Enter your name"
+                                        onChange={(e) => {
+                                            updateEditUser('name', e.target.value)
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         label="Email"
-                                        defaultValue={user.email}
+                                        defaultValue={editUser.email}
                                         className={classes.emailTextField}
                                         helperText="Enter your email"
+                                        onChange={(e) => {
+                                            updateEditUser('email', e.target.value)
+                                        }}
                                     />
                                 </Grid>
 
-                                <Divider />
+                                <Divider/>
                                 <Grid item xs={12}>
                                     <Typography variant={"h3"}>
                                         Your Address
@@ -156,36 +204,54 @@ export default function UserPage() {
                                     <Grid item xs={12}>
                                         <TextField
                                             label="City"
-                                            defaultValue={user.address.city}
+                                            defaultValue={editUser.address.city}
                                             className={classes.textField}
                                             helperText="Enter your city"
+                                            onChange={(e) => {
+                                                updateEditUserAddress('city', e.target.value)
+                                            }}
                                         />
                                     </Grid>
 
                                     <TextField
                                         label="Street"
-                                        defaultValue={user.address.street}
+                                        defaultValue={editUser.address.street}
                                         className={classes.textField}
                                         helperText="Enter your street"
+                                        onChange={(e) => {
+                                            updateEditUserAddress('street', e.target.value)
+                                        }}
                                     />
                                     <TextField
                                         label="Building"
-                                        defaultValue={user.address.build}
+                                        defaultValue={editUser.address.build}
                                         className={classes.textField}
                                         helperText="Enter your building"
+                                        onChange={(e) => {
+                                            updateEditUserAddress('build', e.target.value)
+                                        }}
                                     />
                                     <TextField
                                         label="Flat"
-                                        defaultValue={user.address.flat}
+                                        defaultValue={editUser.address.flat}
                                         className={classes.textField}
                                         helperText="Enter your flat"
+                                        onChange={(e) => {
+                                            updateEditUserAddress('flat', e.target.value)
+                                        }}
                                     />
                                 </div>
 
 
-                                <Grid item xs={12} >
-                                    <Button variant={"outlined"} color={"primary"}
-                                            className={classes.saveButton}>
+                                <Grid item xs={12}>
+                                    <Button variant={"outlined"}
+                                            color={"primary"}
+                                            className={classes.saveButton}
+                                            disabled={updateStatus === "loading"}
+                                            onClick={e => {
+                                                dispatchUpdateUser()
+                                            }}
+                                    >
                                         Save changes
                                     </Button>
                                 </Grid>

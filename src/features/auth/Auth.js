@@ -12,13 +12,13 @@ const initialState = {
 // Thunk prefixes
 const SIGN_IN_USER = 'auth/signInUser';
 const SIGN_UP_USER = 'auth/signUpUser';
+const UPDATE_USER = 'auth/updateUser';
 
 // Thunks
 export const signInUser = createAsyncThunk(
     SIGN_IN_USER,
     async userData => {
         const response = await API.post('/login', userData);
-        console.log(response)
         return {user: response.data, token: response.headers.authorization};
     }
 )
@@ -26,8 +26,18 @@ export const signInUser = createAsyncThunk(
 export const signUpUser = createAsyncThunk(
     SIGN_UP_USER,
     async userData => {
-        const response = await API.post('/sign-up', userData)
-        return {user: response.data, token: response.headers.authorization}
+        const response = await API.post('/sign-up', userData);
+        return {user: response.data, token: response.headers.authorization};
+    }
+)
+
+export const updateUser = createAsyncThunk(
+    UPDATE_USER,
+    async userData => {
+        console.log("Here - " + API.defaults.headers.common)
+
+        const response = await API.put('/update-user', userData);
+        return {user: response.data};
     }
 )
 
@@ -45,23 +55,36 @@ const authSlice = createSlice({
             state.status = 'loading'
         },
         [signInUser.fulfilled]: (state, action) => {
-            state.status = 'succeeded'
-            saveUser(state, action)
+            state.status = 'succeeded';
+            saveUser(state, action);
+            saveToken(action.payload.token);
         },
         [signInUser.rejected]: (state, action) => {
-            state.status = 'failed'
-            console.log(action.error)
+            state.status = 'failed';
+            console.log(action.error);
         },
         [signUpUser.pending]: (state) => {
-            state.status = 'loading'
+            state.status = 'loading';
         },
         [signUpUser.fulfilled]: (state, action) => {
-            state.status = 'succeeded'
-            saveUser(state, action)
+            state.status = 'succeeded';
+            saveUser(state, action);
+            saveToken(action.payload.token);
         },
         [signUpUser.rejected]: (state, action) => {
-            state.status = 'failed'
-            console.log(action.error)
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [updateUser.pending]: (state) => {
+            state.status = 'loading';
+        },
+        [updateUser.fulfilled]: (state, action) => {
+            state.status = 'succeeded';
+            saveUser(state, action);
+        },
+        [updateUser.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
         }
     },
 })
@@ -76,7 +99,6 @@ const forgetUser = (state) => {
 const saveUser = (state, action) => {
     state.status = 'succeeded'
     state.user = action.payload.user
-    saveToken(action.payload.token);
     saveState(state);
 };
 
