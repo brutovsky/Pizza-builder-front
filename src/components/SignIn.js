@@ -34,6 +34,9 @@ import {
 
 import {
     signInUser,
+    selectStatus,
+    selectUser,
+    selectError
 } from '../features/auth/Auth'
 
 import {
@@ -82,13 +85,15 @@ export default function SignIn() {
     //const token = useSelector(state => state.token);
     const dispatch = useDispatch();
 
+    const authStatus = useSelector(selectStatus);
+
     const history = useHistory();
 
     const performSignIn = () => {
 
         console.log(dispatch)
 
-        setLoading(true)
+        //setLoading(true)
 
         dispatch(
             signInUser({
@@ -105,8 +110,6 @@ export default function SignIn() {
                 console.log(rejectedValueOrSerializedError)
                 setLoading(false)
             })
-
-        dispatch(resetToken())
     }
 
     return (
@@ -156,7 +159,7 @@ export default function SignIn() {
                             variant="contained"
                             color="primary"
                             className={classes.submit}
-                            disabled={loading}
+                            disabled={authStatus === "loading"}
                             onClick={e => {
                                 performSignIn()
                             }}
