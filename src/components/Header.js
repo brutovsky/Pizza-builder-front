@@ -9,10 +9,6 @@ import IconButton from "@material-ui/core/IconButton";
 
 import {Link, useHistory} from "react-router-dom"
 
-import {ReactComponent as LoginIcon} from '../resources/images/login.svg'
-import {Box} from "@material-ui/core";
-
-import theme from './Theme'
 import Tooltip from "@material-ui/core/Tooltip";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Avatar from "@material-ui/core/Avatar";

@@ -10,17 +10,19 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Copyright from "./Copyright";
 import logo from "../resources/images/logo.png";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import {
+    selectStatus,
     signUpUser,
 } from '../features/auth/Auth'
 import {unwrapResult} from "@reduxjs/toolkit";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,46 +53,51 @@ export default function SignUp() {
 
     const dispatch = useDispatch();
 
+    const authStatus = useSelector(selectStatus);
+
+    const history = useHistory();
+
     const performSignUp = () => {
 
-        console.log(dispatch)
-
         dispatch(
-            signUpUser({
-                name: name,
-                email: email,
-                phone: '',
-                address:{
-                    city: '',
-                    street: '',
-                    build: 0,
-                    flat: 0
-                },
-                password:password
-            })
+            signUpUser(
+                {
+                    name: name,
+                    email: email,
+                    phone: '',
+                    address: {
+                        city: '',
+                        street: '',
+                        build: 0,
+                        flat: 0
+                    },
+                    password: password
+                })
         ).then(unwrapResult)
             .then(originalPromiseResult => {
                 console.log(originalPromiseResult)
+                history.push("/home");
             })
             .catch(rejectedValueOrSerializedError => {
                 console.log(rejectedValueOrSerializedError)
             })
     }
 
+
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
-                <img src={logo} />
+                <img src={logo}/>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12}>
                             <TextField
                                 autoComplete="fname"
                                 name="name"
@@ -130,7 +137,7 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={12}>
                             <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                                control={<Checkbox value="allowExtraEmails" color="primary"/>}
                                 label="I want to receive new pizza patter, marketing promotions and updates via email."
                             />
                         </Grid>
@@ -140,6 +147,7 @@ export default function SignUp() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        disabled={authStatus === "loading"}
                         onClick={e => {
                             performSignUp()
                         }}
@@ -156,7 +164,7 @@ export default function SignUp() {
                 </form>
             </div>
             <Box mt={5}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     );
