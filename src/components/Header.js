@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {HouseOutlined, LocalPizza, ShoppingBasket} from "@material-ui/icons";
+import {HouseOutlined, LocalPizza, ShoppingBasket, ExitToApp} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -18,10 +18,16 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 
+import {useDispatch, useSelector} from "react-redux";
+
+import {
+    signOut,
+    selectUser, signInUser
+} from '../features/auth/Auth'
+
 const TITLE = 'Home'
 
-const SECTIONS = [
-    {title: 'BUILD', href: '/build'},
+const SECTIONS_GUEST = [
     {title: 'Sign In', href: '/signin'},
     {title: 'Sign Up', href: '/signup'},
 ]
@@ -31,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     menuButton: {
-        minWidth:80,
+        minWidth: 80,
         marginRight: theme.spacing(2),
     },
-    basket:{
-        minWidth:80,
+    basket: {
+        minWidth: 80,
         marginRight: theme.spacing(2),
         backgroundColor: theme.palette.primary.light,
         '&:hover': {
@@ -52,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
     basketIcon: {
         paddingRight: 5
     },
+    exitIcon: {
+        paddingRight: 5,
+        color: '#FFF'
+    },
     orange: {
         color: theme.palette.getContrastText(deepOrange[500]),
         backgroundColor: deepOrange[500],
@@ -61,14 +71,23 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
     const classes = useStyles();
 
+    const dispatch = useDispatch();
+
+    const user = useSelector(selectUser);
+    console.log(user)
     let isPageWide1400 = useMediaQuery('(min-width: 1400px)')
     let isPageWide700 = useMediaQuery('(min-width: 700px)')
     let isPageWide400 = useMediaQuery('(min-width: 400px)')
 
+    const performSignOut = () => {
+        console.log("HA")
+        dispatch(signOut())
+    }
+
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton edge="start"  color="inherit" aria-label="menu" href="/home">
+                <IconButton edge="start" color="inherit" aria-label="menu" href="/home">
                     <LocalPizza className={classes.icon}/>
                 </IconButton>
 
@@ -78,8 +97,7 @@ export default function Header() {
 
 
                 <Tooltip title="4 items in the basket">
-                    <Button color={"inherit"} href={'/checkout'} className={classes.basket} variant="raised"
-                            renderAs="Button" >
+                    <Button color={"inherit"} href={'/checkout'} className={classes.basket}>
                         {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
                         <Typography className={classes.howManyText} variant={"h5"}>
                             $34.06
@@ -88,13 +106,15 @@ export default function Header() {
                 </Tooltip>
 
 
-                {isPageWide400 ? SECTIONS.map(({title, href}) => {
-                    return <Button color={"inherit"} href={href} className={classes.menuButton}
-                                   renderAs="Button"><span>{title}</span></Button>
-                }) : ''}
+                <Button color={"inherit"} href={'/build'} className={classes.menuButton}><span>BUILD</span></Button>
+                {(user == null)?(isPageWide400 ? SECTIONS_GUEST.map(({title, href}) => {
+                    return <Button color={"inherit"} href={href} className={classes.menuButton}><span>{title}</span></Button>
+                }) : ''):''}
 
-                <Button href={'/userpage'}><span> <Avatar className={classes.orange} >P</Avatar></span></Button>
-
+                {(user !== null)? <div>
+                    <Button href={'/userpage'}><span> <Avatar className={classes.orange} >{user.name.charAt(0)}</Avatar></span></Button>
+                    <Button onClick={e => {performSignOut()}}><ExitToApp className={classes.exitIcon}/> </Button>
+                </div>:''}
 
             </Toolbar>
         </AppBar>

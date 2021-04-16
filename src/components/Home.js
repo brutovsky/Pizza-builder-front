@@ -111,11 +111,9 @@ function Home() {
                                             Tasty pizza description.
                                         </Typography>
                                         <Divider/>
-                                        <Typography variant={"body2"}>
-                                            <p><b>🧀 Mozarella, Feta, Parmezan, Cheddar</b></p>
-                                            <p><b>🍖 No</b></p>
-                                            <p><b>🥣 Al`fredo</b></p>
-                                        </Typography>
+                                        <Typography variant={"body2"}><span><b>🧀 Mozarella, Feta, Parmezan, Cheddar</b></span></Typography>
+                                        <Typography variant={"body2"}><span><b>🍖 No</b></span></Typography>
+                                        <Typography variant={"body2"}><span><b>🥣 Al`fredo</b></span></Typography>
 
                                         <ButtonGroup variant="outlined" color="primary"
                                                      aria-label="contained primary button group">

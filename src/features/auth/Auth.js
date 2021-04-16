@@ -8,19 +8,18 @@ const initialState = {
     error: null,
     user: null
 }
-//
 
 // Thunk prefixes
 const SIGN_IN_USER = 'auth/signInUser';
 const SIGN_UP_USER = 'auth/signUpUser';
-//
 
 // Thunks
-
 export const signInUser = createAsyncThunk(
     SIGN_IN_USER,
     async userData => {
-        return (await API.post('/login', userData)).headers.authorization
+        const response = await API.post('/login', userData);
+        console.log(response)
+        return {user: response.data, token: response.headers.authorization};
     }
 )
 
@@ -28,25 +27,26 @@ export const signUpUser = createAsyncThunk(
     SIGN_UP_USER,
     async userData => {
         const response = await API.post('/sign-up', userData)
-        console.log(response)
-        return {data: response.data, token: response.headers.authorization}
+        return {user: response.data, token: response.headers.authorization}
     }
 )
-
-//
 
 // Slice
 const authSlice = createSlice({
     name: 'auth',
-    initialState: initialState,
+    initialState: loadFromLocalStorage(),
+    reducers:{
+        signOut: state => {
+            forgetUser(state);
+        },
+    },
     extraReducers: {
         [signInUser.pending]: (state) => {
             state.status = 'loading'
         },
         [signInUser.fulfilled]: (state, action) => {
             state.status = 'succeeded'
-            saveToken(action.payload)
-            console.log(action.payload)
+            saveUser(state, action)
         },
         [signInUser.rejected]: (state, action) => {
             state.status = 'failed'
@@ -57,8 +57,7 @@ const authSlice = createSlice({
         },
         [signUpUser.fulfilled]: (state, action) => {
             state.status = 'succeeded'
-            saveToken(state, action.payload.token)
-            console.log(action.payload)
+            saveUser(state, action)
         },
         [signUpUser.rejected]: (state, action) => {
             state.status = 'failed'
@@ -66,9 +65,58 @@ const authSlice = createSlice({
         }
     },
 })
-//
-export const {resetToken, test} = authSlice.actions
 
+// User actions
+
+const forgetUser = (state) => {
+    Object.assign(state, initialState);
+    deleteState();
+};
+
+const saveUser = (state, action) => {
+    state.status = 'succeeded'
+    state.user = action.payload.user
+    saveToken(action.payload.token);
+    saveState(state);
+};
+
+// LocalStorage Utils
+
+const deleteState = () => {
+    try {
+        localStorage.setItem('userState', null);
+        deleteToken();
+    } catch (err){
+        console.log(err)
+    }
+};
+
+const saveState = (state) => {
+    try {
+        const serializedUser = JSON.stringify(state.user);
+        let serializedState = JSON.stringify({...state, user:serializedUser});
+        localStorage.setItem('userState', serializedState);
+    } catch (err){
+        console.log(err)
+    }
+};
+
+function loadFromLocalStorage() {
+    try {
+        const serialisedState = localStorage.getItem("userState");
+        if (serialisedState === null) return initialState;
+        else{
+            let parsedState = JSON.parse(serialisedState);
+            let parsedUser = JSON.parse(parsedState.user);
+            return {...parsedState, user:parsedUser};
+        }
+    } catch (e) {
+        console.warn(e);
+        return initialState;
+    }
+}
+
+// Token Utils
 const saveToken = (token) => {
     try {
         localStorage.setItem('token', token);
@@ -91,6 +139,7 @@ const deleteToken = () => {
 export const selectStatus = state => state.auth.status
 export const selectError = state => state.auth.error
 export const selectUser = state => state.auth.user
+// Actions
+export const {signOut} = authSlice.actions
 //
-
 export default authSlice.reducer;

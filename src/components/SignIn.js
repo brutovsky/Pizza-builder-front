@@ -25,22 +25,10 @@ import {unwrapResult} from '@reduxjs/toolkit'
 import { useHistory } from "react-router-dom";
 
 import {
-    decrement,
-    increment,
-    incrementByAmount,
-    incrementAsync,
-    selectCount
-} from '../features/test/Counter'
-
-import {
     signInUser,
     selectStatus,
     selectUser,
     selectError
-} from '../features/auth/Auth'
-
-import {
-    resetToken
 } from '../features/auth/Auth'
 
 const useStyles = makeStyles((theme) => ({
@@ -80,9 +68,6 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [loading, setLoading] = useState(false);
-
-    //const token = useSelector(state => state.token);
     const dispatch = useDispatch();
 
     const authStatus = useSelector(selectStatus);
@@ -90,10 +75,6 @@ export default function SignIn() {
     const history = useHistory();
 
     const performSignIn = () => {
-
-        console.log(dispatch)
-
-        //setLoading(true)
 
         dispatch(
             signInUser({
@@ -104,11 +85,9 @@ export default function SignIn() {
             .then(originalPromiseResult => {
                 console.log(originalPromiseResult)
                 history.push("/home");
-                setLoading(false)
             })
             .catch(rejectedValueOrSerializedError => {
                 console.log(rejectedValueOrSerializedError)
-                setLoading(false)
             })
     }
 

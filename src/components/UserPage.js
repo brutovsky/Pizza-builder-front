@@ -21,12 +21,19 @@ import Box from "@material-ui/core/Box";
 import IngredientGroupTabs from "./builderComponents/IngredientTabs";
 
 import Theme from './Theme'
-import {useDispatch} from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 
 import MuiPhoneInput from 'material-ui-phone-number'
+
+import {useDispatch, useSelector} from "react-redux";
+
+import {
+    selectStatus,
+    selectUser,
+    selectError
+} from '../features/auth/Auth'
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -85,7 +92,11 @@ const useStyles = makeStyles((theme) => ({
 export default function UserPage() {
     const classes = useStyles();
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    const user = useSelector(selectUser);
+
+    console.log("user - " + user.name)
 
     const [testUser,setTestUser] = useState({
         name: 'pasha',
@@ -109,23 +120,25 @@ export default function UserPage() {
                         <Container>
                             <Grid container spacing={3} className={classes.container}>
                                 <Grid item xs={12}>
-                                    <Typography variant={"h6"}>
-                                        <b>@pasha</b>
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
                                     <Container className={classes.avatarBox}>
-                                        <Avatar className={classes.orange}>P</Avatar>
+                                        <Avatar className={classes.orange}>{user.name.charAt(0).toUpperCase()}</Avatar>
                                     </Container>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <MuiPhoneInput defaultCountry={'ua'} value={testUser.phone} onChange={(e) => {console.log(e)}}/>
+                                    <MuiPhoneInput defaultCountry={'ua'} value={user.phone} onChange={(e) => {console.log(e)}}/>
                                 </Grid>
-
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Your name"
+                                        defaultValue={user.name}
+                                        className={classes.emailTextField}
+                                        helperText="Enter your name"
+                                    />
+                                </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         label="Email"
-                                        defaultValue={testUser.email}
+                                        defaultValue={user.email}
                                         className={classes.emailTextField}
                                         helperText="Enter your email"
                                     />
@@ -143,7 +156,7 @@ export default function UserPage() {
                                     <Grid item xs={12}>
                                         <TextField
                                             label="City"
-                                            defaultValue={testUser.address.city}
+                                            defaultValue={user.address.city}
                                             className={classes.textField}
                                             helperText="Enter your city"
                                         />
@@ -151,19 +164,19 @@ export default function UserPage() {
 
                                     <TextField
                                         label="Street"
-                                        defaultValue={testUser.address.street}
+                                        defaultValue={user.address.street}
                                         className={classes.textField}
                                         helperText="Enter your street"
                                     />
                                     <TextField
                                         label="Building"
-                                        defaultValue={testUser.address.build}
+                                        defaultValue={user.address.build}
                                         className={classes.textField}
                                         helperText="Enter your building"
                                     />
                                     <TextField
                                         label="Flat"
-                                        defaultValue={testUser.address.flat}
+                                        defaultValue={user.address.flat}
                                         className={classes.textField}
                                         helperText="Enter your flat"
                                     />
