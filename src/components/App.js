@@ -21,6 +21,7 @@ import {PrivateRoute} from "./utils/PrivateRoute";
 import {Role} from "../features/auth/Role";
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/auth/Auth";
+import AdminIngredienst from "./adminInterface/AdminIngredients";
 
 function App() {
 
@@ -34,6 +35,9 @@ function App() {
                     <Route exact path='/signup' component={SignUp} />
                     <Route exact path='/home' component={Home} />
                     <Route exact path='/build' component={PizzaBuilder} />
+
+                    <Route exact path='/admin/ingredients' component={AdminIngredienst} />
+
                     <PrivateRoute exact path='/userpage' component={UserPage} currentUser={currentUser} roles={[Role.User,Role.Admin]} />
                     <Route exact path='/checkout' component={Checkout} />
                     <Redirect from='/' to='/home'/>

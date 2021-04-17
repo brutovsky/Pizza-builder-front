@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -19,6 +19,13 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    fetchAllPatterns,
+    selectStatus,
+    selectPatterns
+} from "../features/pizzaPatterns/PizzaPatterns";
+import PizzaCard from "./cards/PizzaCard";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -56,10 +63,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+//const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function Home() {
     const classes = useStyles();
+
+    const fetchPatterns = () =>{
+        dispatch(fetchAllPatterns());
+    }
+
+    useEffect(()=>fetchPatterns(), []);
+
+    const dispatch = useDispatch();
+
+    const pizzaStatus = useSelector(selectStatus);
+
+    const pizzaPatterns = useSelector(selectPatterns);
 
     return (
         <React.Fragment>
@@ -94,51 +113,8 @@ function Home() {
                 <Container className={classes.cardGrid} maxWidth="md">
                     {/* End hero unit */}
                     <Grid container spacing={4}>
-                        {cards.map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
-                                <Card className={classes.card}>
-                                    <CardMedia
-                                        className={classes.cardMedia}
-                                        image="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80"
-                                        title="Image title"
-                                    />
-                                    <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            Pizza Four-Cheese 🥦
-                                        </Typography>
-                                        <Divider/>
-                                        <Typography variant={"body1"}>
-                                            Tasty pizza description.
-                                        </Typography>
-                                        <Divider/>
-                                        <Typography variant={"body2"}><span><b>🧀 Mozarella, Feta, Parmezan, Cheddar</b></span></Typography>
-                                        <Typography variant={"body2"}><span><b>🍖 No</b></span></Typography>
-                                        <Typography variant={"body2"}><span><b>🥣 Al`fredo</b></span></Typography>
-
-                                        <ButtonGroup variant="outlined" color="primary"
-                                                     aria-label="contained primary button group">
-                                            <Button variant={"contained"}>Small</Button>
-                                            <Button>Medium</Button>
-                                            <Button>Large</Button>
-                                        </ButtonGroup>
-
-                                    </CardContent>
-
-                                    <CardActions className={classes.cardActions} disableSpacing={false}>
-                                        <Typography color={"secondary"} variant={"body1"}>
-                                            <b><i>Price: 99.9$</i></b>
-                                        </Typography>
-                                        <Button size="large" color="primary">
-                                            Modify
-                                        </Button>
-                                        <Button size="large" color="primary">
-                                            Buy
-                                        </Button>
-                                    </CardActions>
-
-
-                                </Card>
-                            </Grid>
+                        {pizzaPatterns !== null && pizzaPatterns.map((pattern) => (
+                            <PizzaCard></PizzaCard>
                         ))}
                     </Grid>
                 </Container>
