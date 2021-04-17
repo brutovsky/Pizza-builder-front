@@ -95,6 +95,11 @@ export default function Header() {
                 </Typography>
 
 
+                {(user != null && user.role === 'Admin')?<div>
+                    <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton}><span>Ingredients</span></Button>
+                    <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton}><span>Groups</span></Button>
+                </div> : ''}
+
                 <Tooltip title="4 items in the basket">
                     <Button color={"inherit"} href={'/checkout'} className={classes.basket}>
                         {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
