@@ -23,6 +23,8 @@ import {
 } from '../features/auth/Auth'
 import {unwrapResult} from "@reduxjs/toolkit";
 import {useHistory} from "react-router-dom";
+import {validateEmail, validatePassword} from "./utils/Validation";
+import {snack} from "./utils/CustomSnackBar";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -47,9 +49,37 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
     const classes = useStyles();
 
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) =>{
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
+
+    // Validation
+    const [validName, setValidName] = useState(true);
+    const [validEmail, setValidEmail] = useState(true);
+    const [validPassword, setValidPassword] = useState(true);
+    const validate = () =>{
+        const isValidName = name != "";
+        setValidName(isValidName);
+
+        const isValidEmail = validateEmail(email) === true;
+        setValidEmail(isValidEmail);
+
+        const isValidPassword = validatePassword(password) === true;
+        setValidPassword(isValidPassword);
+
+        return isValidName && isValidEmail && isValidPassword;
+    }
+    //
+
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const dispatch = useDispatch();
 
@@ -58,29 +88,32 @@ export default function SignUp() {
     const history = useHistory();
 
     const performSignUp = () => {
-
-        dispatch(
-            signUpUser(
-                {
-                    name: name,
-                    email: email,
-                    phone: '',
-                    address: {
-                        city: '',
-                        street: '',
-                        build: 0,
-                        flat: 0
-                    },
-                    password: password
+        if(validate()){
+            dispatch(
+                signUpUser(
+                    {
+                        name: name,
+                        email: email,
+                        phone: '',
+                        address: {
+                            city: '',
+                            street: '',
+                            build: 0,
+                            flat: 0
+                        },
+                        password: password
+                    })
+            ).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(originalPromiseResult)
+                    showSnack("success","Account successfully created !");
+                    history.push("/home");
                 })
-        ).then(unwrapResult)
-            .then(originalPromiseResult => {
-                console.log(originalPromiseResult)
-                history.push("/home");
-            })
-            .catch(rejectedValueOrSerializedError => {
-                console.log(rejectedValueOrSerializedError)
-            })
+                .catch(rejectedValueOrSerializedError => {
+                    console.log(rejectedValueOrSerializedError)
+                    showSnack("error","User with such email or username already exists :/");
+                })
+        }
     }
 
 
@@ -89,6 +122,7 @@ export default function SignUp() {
             <CssBaseline/>
             <div className={classes.paper}>
                 <img src={logo}/>
+                {snack(snackOpen,setSnackOpen,snackSeverity,snackText)}
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon/>
                 </Avatar>
@@ -108,6 +142,10 @@ export default function SignUp() {
                                 label="Name"
                                 autoFocus
                                 onChange={e => setName(e.target.value)}
+                                helperText={
+                                    name == '' ? 'Name is required':''
+                                }
+                                error={!validName}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -120,6 +158,10 @@ export default function SignUp() {
                                 name="email"
                                 autoComplete="email"
                                 onChange={e => setEmail(e.target.value)}
+                                helperText={
+                                    validateEmail(email)
+                                }
+                                error={!validEmail}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -133,6 +175,10 @@ export default function SignUp() {
                                 id="password"
                                 autoComplete="current-password"
                                 onChange={e => setPassword(e.target.value)}
+                                helperText={
+                                    validatePassword(password)
+                                }
+                                error={!validPassword}
                             />
                         </Grid>
                         <Grid item xs={12}>

@@ -82,6 +82,11 @@ export default function UserPage() {
     const [snackOpen, setSnackOpen] = React.useState(false);
     const [snackSeverity, setSnackSeverity] = React.useState('success');
     const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) =>{
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
     //
 
     const classes = useStyles();
@@ -115,15 +120,11 @@ export default function UserPage() {
         ).then(unwrapResult)
             .then(originalPromiseResult => {
                 console.log(originalPromiseResult);
-                setSnackSeverity("success");
-                setSnackText("User info successfully updated !");
-                setSnackOpen(true);
+                showSnack("success","User info successfully updated !");
             })
             .catch(rejectedValueOrSerializedError => {
                 console.log(rejectedValueOrSerializedError);
-                setSnackSeverity("error");
-                setSnackText("Something went wrong :/");
-                setSnackOpen(true);
+                showSnack("error","Something went wrong :/");
             })
     }
 

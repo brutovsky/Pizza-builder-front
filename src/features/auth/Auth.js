@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 
 import API from '../../api/Api';
+import {Role} from "./Role";
 
 // Initial state
 const initialState = {
@@ -98,7 +99,10 @@ const forgetUser = (state) => {
 
 const saveUser = (state, action) => {
     state.status = 'succeeded'
-    state.user = action.payload.user
+    //
+    const userWithRole = {...action.payload.user, role:Role.Admin};
+    //
+    state.user = userWithRole;
     saveState(state);
 };
 

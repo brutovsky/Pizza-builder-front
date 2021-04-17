@@ -17,8 +17,15 @@ import theme from "./Theme";
 import PizzaBuilder from "./PizzaBuilder";
 import UserPage from "./UserPage";
 import Checkout from "./checkout/Checkout";
+import {PrivateRoute} from "./utils/PrivateRoute";
+import {Role} from "../features/auth/Role";
+import {useSelector} from "react-redux";
+import {selectUser} from "../features/auth/Auth";
 
 function App() {
+
+    const currentUser = useSelector(selectUser);
+
     return (
         <div className="App">
             <ThemeProvider theme={theme}>
@@ -27,7 +34,7 @@ function App() {
                     <Route exact path='/signup' component={SignUp} />
                     <Route exact path='/home' component={Home} />
                     <Route exact path='/build' component={PizzaBuilder} />
-                    <Route exact path='/userpage' component={UserPage} />
+                    <PrivateRoute exact path='/userpage' component={UserPage} currentUser={currentUser} roles={[Role.User,Role.Admin]} />
                     <Route exact path='/checkout' component={Checkout} />
                     <Redirect from='/' to='/home'/>
                 </Switch>

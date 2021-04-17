@@ -27,6 +27,8 @@ import {
     selectUser,
     selectError
 } from '../features/auth/Auth'
+import {snack} from "./utils/CustomSnackBar";
+import {validateEmail} from "./utils/Validation";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -62,6 +64,30 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
     const classes = useStyles();
 
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) =>{
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
+
+    // Validation
+    const [validEmail, setValidEmail] = useState(true);
+    const [validPassword, setValidPassword] = useState(true);
+    const validate = () =>{
+        const isValidEmail = validateEmail(email) === true;
+        setValidEmail(isValidEmail);
+
+        const isValidPassword = password != "";
+        setValidPassword(isValidPassword);
+
+        return isValidEmail && isValidPassword;
+    }
+    //
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -72,20 +98,23 @@ export default function SignIn() {
     const history = useHistory();
 
     const performSignIn = () => {
-
-        dispatch(
-            signInUser({
-                email: email,
-                password: password
-            })
-        ).then(unwrapResult)
-            .then(originalPromiseResult => {
-                console.log(originalPromiseResult)
-                history.push("/home");
-            })
-            .catch(rejectedValueOrSerializedError => {
-                console.log(rejectedValueOrSerializedError)
-            })
+        if(validate()){
+            dispatch(
+                signInUser({
+                    email: email,
+                    password: password
+                })
+            ).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(originalPromiseResult)
+                    showSnack("success","You successfully signed up !");
+                    history.push("/home");
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    showSnack("error","Wrong password or something :/");
+                    console.log(rejectedValueOrSerializedError)
+                })
+        }
     }
 
     return (
@@ -95,6 +124,7 @@ export default function SignIn() {
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>
                     <img src={logo}/>
+                    {snack(snackOpen,setSnackOpen,snackSeverity,snackText)}
                     <Avatar className={classes.avatar}>
                         <LockOutlinedIcon/>
                     </Avatar>
@@ -113,6 +143,10 @@ export default function SignIn() {
                             autoComplete="email"
                             autoFocus
                             onChange={e => setEmail(e.target.value)}
+                            helperText={
+                                validateEmail(email)
+                            }
+                            error={!validEmail}
                         />
                         <TextField
                             variant="outlined"
@@ -125,6 +159,10 @@ export default function SignIn() {
                             id="password"
                             autoComplete="current-password"
                             onChange={e => setPassword(e.target.value)}
+                            helperText={
+                                password == '' ?  'Password is required' : ''
+                            }
+                            error={!validPassword}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary"/>}
