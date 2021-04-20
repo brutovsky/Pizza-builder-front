@@ -21,7 +21,6 @@ export const fetchAllGroups = createAsyncThunk(
     FETCH_ALL_GROUPS,
     async () => {
         const response = await API.get('/products/group/all');
-        console.log(response);
         return {groups: response.data};
     }
 )
@@ -30,7 +29,6 @@ export const fetchAllIngredients = createAsyncThunk(
     FETCH_ALL_INGREDIENTS,
     async () => {
         const response = await API.get('/products/all');
-        console.log(response);
         return {ingredients: response.data};
     }
 )
@@ -62,7 +60,6 @@ const ingredientsSlice = createSlice({
             state.status = 'loading'
         },
         [fetchAllGroups.fulfilled]: (state, action) => {
-            console.log(action.payload.groups)
             Object.assign(state, {...state, status : 'succeeded', groups : action.payload.groups});
         },
         [fetchAllGroups.rejected]: (state, action) => {

@@ -6,34 +6,20 @@ import Container from '@material-ui/core/Container';
 import Header from "../Header";
 import Footer from "../Footer";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import {createGroup, fetchAllGroups, selectGroups, selectStatus} from "../../features/ingredients/Ingredients";
 import {useDispatch, useSelector} from "react-redux";
 import {snack} from "../utils/CustomSnackBar";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import {ExpandLess, ExpandMore, StarBorder} from "@material-ui/icons";
-import Collapse from "@material-ui/core/Collapse";
 import OrderListItem from "./OrderListItem";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         minHeight: '79vh',
-        flexGrow: 1,
-    },
-    footer: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(6),
     },
     listGroups: {
         alignContent: "center",
         justifyContent: "center",
         marginTop: 20
     },
-    listItemText: {
-        marginLeft: 20,
-        marginRight: 20
-    }
 }));
 
 export default function AdminOrders() {

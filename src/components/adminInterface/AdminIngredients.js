@@ -20,7 +20,6 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {
-    createGroup,
     createIngredient,
     fetchAllIngredients,
     fetchAllGroups,
@@ -81,7 +80,29 @@ export default function AdminIngredienst() {
         setSnackText(text);
         setSnackOpen(true);
     }
-    // Methods
+
+    // Validation
+    const [validIngrName, setValidIngrName] = useState(true);
+    const [validIngrPrice, setValidIngrPrice] = useState(true);
+    const [validIngrImage, setValidIngrImage] = useState(true);
+    const [validIngrGroup, setValidIngrGroup] = useState(true);
+    const validate = () => {
+        const isValiIngrdName = ingrName != "";
+        setValidIngrName(isValiIngrdName);
+
+        const isValidIngrPrice = ingrPrice != "";
+        setValidIngrPrice(isValidIngrPrice);
+
+        const isValidIngrGroup = ingrGroup != "";
+        setValidIngrGroup(isValidIngrGroup);
+
+        const isValidIngrImage = validateImageUrl(ingrImage) === true;
+        setValidIngrImage(isValidIngrImage);
+
+        return isValiIngrdName && isValidIngrPrice && isValidIngrGroup && isValidIngrImage;
+    }
+
+    //
     const fetchGroups = () => {
         console.log("fetch")
         dispatch(fetchAllGroups());
@@ -114,37 +135,8 @@ export default function AdminIngredienst() {
                 });
         }
     }
-    // Validation
-    const [validIngrName, setValidIngrName] = useState(true);
-    const [validIngrPrice, setValidIngrPrice] = useState(true);
-    const [validIngrImage, setValidIngrImage] = useState(true);
-    const [validIngrGroup, setValidIngrGroup] = useState(true);
-    const validate = () => {
-        const isValiIngrdName = ingrName != "";
-        setValidIngrName(isValiIngrdName);
 
-        const isValidIngrPrice = ingrPrice != "";
-        setValidIngrPrice(isValidIngrPrice);
-
-        const isValidIngrGroup = ingrGroup != "";
-        setValidIngrGroup(isValidIngrGroup);
-
-        const isValidIngrImage = validateImageUrl(ingrImage) === true;
-        setValidIngrImage(isValidIngrImage);
-
-        return isValiIngrdName && isValidIngrPrice && isValidIngrGroup && isValidIngrImage;
-    }
-    // Effects
-    useEffect(() => {
-        fetchIngredients();
-        fetchGroups();
-    }, []);
-    // Redux
-    const dispatch = useDispatch();
-    const status = useSelector(selectStatus);
-    const groups = useSelector(selectGroups);
-    const ingredients = useSelector(selectIngredients);
-    // Fields
+    // State
     const [ingrImage, setIngrImage] = useState('https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg');
     const [ingrGroup, setIngrGroup] = useState('');
     const [ingrName, setIngrName] = useState('melon');
@@ -157,6 +149,18 @@ export default function AdminIngredienst() {
     const handleCheckChange = (event) => {
         setIngrChecks({...ingrChecks, [event.target.name]: event.target.checked});
     };
+
+    // Effects
+    useEffect(() => {
+        fetchIngredients();
+        fetchGroups();
+    }, []);
+
+    // Redux
+    const dispatch = useDispatch();
+    const status = useSelector(selectStatus);
+    const groups = useSelector(selectGroups);
+    const ingredients = useSelector(selectIngredients);
     //
     return (
         <React.Fragment>
@@ -305,9 +309,7 @@ export default function AdminIngredienst() {
                     </Container>
                 </Container>
             </main>
-            {/* Footer */}
             <Footer/>
-            {/* End footer */}
         </React.Fragment>
     );
 }

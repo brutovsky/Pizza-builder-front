@@ -16,33 +16,33 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 40,
         maxHeight: 60
     },
-    listItem:{
-    },
-    itemText:{
-    }
+    listItem: {},
+    itemText: {}
 }));
 
-export default function PizzaListItem(props){
+export default function PizzaListItem(props) {
     const classes = useStyles();
     const [pizza, setPizza] = useState(props.pizza);
-    return <ListItem className={classes.listItem}>
-        <ListItemAvatar>
-            <Avatar>
-                <img className={classes.ingrImage} src={pizza.photoUrl}/>
-            </Avatar>
-        </ListItemAvatar>
-        <ListItemText fullWidth
-            className={classes.itemText}
-            primary={pizza.name}
-            secondary="x2"
-        />
-        <ListItemSecondaryAction >
-            <IconButton edge="end">
-                <RemoveIcon/>
-            </IconButton>
-            <IconButton edge="end">
-                <AddIcon/>
-            </IconButton>
-        </ListItemSecondaryAction>
-    </ListItem>
+    return <>
+        <ListItem className={classes.listItem} key={pizza.name}>
+            <ListItemAvatar>
+                <Avatar>
+                    <img className={classes.ingrImage} src={pizza.photoUrl}/>
+                </Avatar>
+            </ListItemAvatar>
+            <ListItemText fullWidth
+                          className={classes.itemText}
+                          primary={pizza.name}
+                          secondary={(pizza.size) + ' x' + pizza.amount}
+            />
+            <ListItemSecondaryAction>
+                <IconButton edge="end">
+                    <RemoveIcon/>
+                </IconButton>
+                <IconButton edge="end">
+                    <AddIcon/>
+                </IconButton>
+            </ListItemSecondaryAction>
+        </ListItem>
+    </>
 }

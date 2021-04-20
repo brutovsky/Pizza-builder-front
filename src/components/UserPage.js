@@ -114,7 +114,6 @@ export default function UserPage() {
     }
 
     const dispatchUpdateUser = () => {
-        console.log(editUser)
         dispatch(
             updateUser(editUser)
         ).then(unwrapResult)

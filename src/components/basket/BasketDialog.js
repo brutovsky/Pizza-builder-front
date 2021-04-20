@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,18 +9,12 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import deepOrange from "@material-ui/core/colors/deepOrange";
 import {ShoppingBasket} from "@material-ui/icons";
-import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Container from "@material-ui/core/Container";
 import PizzaListItem from "./PizzaListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
+import {useDispatch, useSelector} from "react-redux";
+import {selectPatterns,fetchCart} from "../../features/basket/basketSlice";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const styles = (theme) => ({
     root: {
@@ -99,6 +93,12 @@ const DialogActions = withStyles((theme) => ({
 
 export default function BasketDialog(props) {
     const classes = useBasketStyles();
+
+    useEffect(()=>dispatch(fetchCart()), []);
+
+    const dispatch = useDispatch()
+    const patterns = useSelector(selectPatterns)
+
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -112,21 +112,29 @@ export default function BasketDialog(props) {
 
     return (
         <div>
-            <Button color={"inherit"} onClick={handleClickOpen} className={classes.basket}>
-                {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
+            <Tooltip title="4 items in the basket">
+                <Button color={"inherit"} onClick={handleClickOpen} className={classes.basket}>
+                    {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
                     <Typography className={classes.howManyText} variant={"h5"}>
                         $34.06
                     </Typography>
-            </Button>
+                </Button>
+            </Tooltip>
             <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} fullWidth={true}>
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     Basket
                 </DialogTitle>
                 <DialogContent dividers>
                     <List>
+                        {patterns != null && patterns.map(p =>
+                            <PizzaListItem key={p.pattern} pizza={{name:p.pattern, amount:p.amount, size:p.size, photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}/>
+                        )}
+                        {
+                            /*
+                             <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
                         <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
-                        <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
-                        <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
+                             */
+                        }
                     </List>
                     <Typography gutterBottom>
                         Total sum: 100$

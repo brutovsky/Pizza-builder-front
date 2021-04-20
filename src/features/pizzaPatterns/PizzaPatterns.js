@@ -18,7 +18,6 @@ export const fetchAllPatterns = createAsyncThunk(
     FETCH_ALL_PATTERNS,
     async () => {
         const response = await API.get('/patterns/all');
-        console.log(response);
         return {patterns: response.data};
     }
 )
@@ -26,9 +25,7 @@ export const fetchAllPatterns = createAsyncThunk(
 export const createPattern = createAsyncThunk(
     CREATE_PATTERN,
     async patternData => {
-        console.log(patternData);
         const response = await API.post('/patterns/add', patternData);
-        console.log(response);
         return {pattern: response.data};
     }
 )
@@ -37,7 +34,6 @@ export const confirmPizzaPattern = createAsyncThunk(
     CONFIRM_PATTERN,
     async confirmData => {
         const response = await API.post('/patterns/confirm/'+confirmData.uuid);
-        console.log(response);
         return {pattern: response.data};
     }
 )
@@ -54,7 +50,6 @@ const pizzaPatternsSlice = createSlice({
             state.status = 'loading'
         },
         [fetchAllPatterns.fulfilled]: (state, action) => {
-            console.log("PATTERNS: " + action.payload.patterns);
             const newState = {...initialState, status : 'succeeded', patterns : action.payload.patterns};
             Object.assign(state, newState);
         },

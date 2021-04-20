@@ -16,6 +16,9 @@ import {
 } from "../../features/pizzaPatterns/PizzaPatterns";
 import {useDispatch} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
+import Container from "@material-ui/core/Container";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -43,9 +46,9 @@ const useStyles = makeStyles((theme) => ({
     cardContent: {
         flexGrow: 1,
     },
-    cardActions:{
-        alignContent:"center",
-        justifyContent:"center"
+    cardActions: {
+        alignContent: "center",
+        justifyContent: "center"
     },
     footer: {
         backgroundColor: theme.palette.background.paper,
@@ -61,23 +64,31 @@ export default function PizzaCard(props) {
     const [pizzaSize, setPizzaSize] = useState('1');
 
     const [pizza, setPizza] = useState(props.pattern);
-    const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i=>i.ingredient));
+    const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i => i.ingredient));
     const [confirmed, setConfirmed] = useState(props.pattern.confirmed);
 
-    const pizzaLabels = () =>{
-        console.log(props.pattern)
+    const pizzaLabels = () => {
         let labels = '';
-        const spicy = ingredients.find(i=>i.spicy);
-        const vegetarian = ingredients.every(i=>i.vegetarian);
-        const vegan = ingredients.every(i=>i.vegan);
-        if(spicy){labels += '🌶️'};
-        if(vegetarian && !vegan){labels += '🥛'};
-        if((vegan && !vegetarian)||(vegan && vegetarian)){labels += '🥦'};
+        const spicy = ingredients.find(i => i.spicy);
+        const vegetarian = ingredients.every(i => i.vegetarian);
+        const vegan = ingredients.every(i => i.vegan);
+        if (spicy) {
+            labels += '🌶️'
+        }
+        ;
+        if (vegetarian && !vegan) {
+            labels += '🥛'
+        }
+        ;
+        if ((vegan && !vegetarian) || (vegan && vegetarian)) {
+            labels += '🥦'
+        }
+        ;
         return labels;
     }
 
-    const groupBy = function(xs, key) {
-        return xs.reduce(function(rv, x) {
+    const groupBy = function (xs, key) {
+        return xs.reduce(function (rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
             return rv;
         }, {});
@@ -85,9 +96,11 @@ export default function PizzaCard(props) {
 
     const groupIngredients = groupBy(ingredients, 'groupName');
 
-    const pizzaPrice = pizza.ingredients.reduce((a,b)=>{return (a + b.ingredient.price*b.quantity)}, 0);
+    const pizzaPrice = pizza.ingredients.reduce((a, b) => {
+        return (a + b.ingredient.price * b.quantity)
+    }, 0);
 
-    const confirmPattern = () =>{
+    const confirmPattern = () => {
         dispatch(confirmPizzaPattern({
             uuid: pizza.uuid
         })).then(unwrapResult)
@@ -100,7 +113,7 @@ export default function PizzaCard(props) {
             })
     }
 
-    return <Grid item key={props.pattern.uuid} xs={12} sm={6} md={4}>
+    return <Grid item xs={12} sm={6} md={4}>
         <Card className={classes.card}>
             <CardMedia
                 className={classes.cardMedia}
@@ -111,38 +124,37 @@ export default function PizzaCard(props) {
                 <Typography gutterBottom variant="h5" component="h2">
                     {pizza.name} {pizzaLabels()}
                 </Typography>
-                <Typography gutterBottom variant="h5" component="h2">
-                    {(props.user != null && props.user.role === 'ADMIN') &&
-                        <div>
-                            <FormControlLabel
-                                control={<Checkbox checked={confirmed} onChange={e => confirmPattern()} name="Connfirmed" />}
-                                label="Confirmed"
-                            />
-                        </div>
-                    }
-                </Typography>
+                {(props.user != null && props.user.role === 'ADMIN') &&
+                <FormControlLabel
+                    control={<Checkbox checked={confirmed} onChange={e => confirmPattern()} />}
+                    label="Confirmed"
+                />
+                }
                 <Divider/>
                 <Typography variant={"body1"}>
                     Ingredients:
                 </Typography>
                 <Divider/>
-                {Object.keys(groupIngredients).map((key)=>
-                    <Typography variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i=>i.name).join(', ')}</b></span></Typography>
+                {Object.keys(groupIngredients).map((key) =>
+                    <Typography key={key}
+                        variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i => i.name).join(', ')}</b></span></Typography>
                 )}
                 <Divider/>
             </CardContent>
             <ButtonGroup variant="outlined" color="primary"
                          aria-label="contained primary button group" className={classes.cardActions}>
-                <Button variant={pizzaSize === '1' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('1')}>Small</Button>
-                <Button variant={pizzaSize === '2' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('2')}>Medium</Button>
-                <Button variant={pizzaSize === '3' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('3')}>Large</Button>
+                <Button variant={pizzaSize === '1' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('1')}
+                        key={"b1"}>Small</Button>
+                <Button variant={pizzaSize === '2' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('2')}
+                        key={"b2"}>Medium</Button>
+                <Button variant={pizzaSize === '3' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('3')}
+                        key={"b3"}>Large</Button>
             </ButtonGroup>
             <CardActions className={classes.cardActions} disableSpacing={false}>
-
                 <Typography color={"secondary"} variant={"body1"}>
                     <b><i>Price: {pizzaPrice}$</i></b>
                 </Typography>
-                <Button size="large" color="primary" >
+                <Button size="large" color="primary">
                     Modify
                 </Button>
                 <Button size="large" color="primary">

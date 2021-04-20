@@ -94,25 +94,18 @@ export default function Header() {
 
 
                 {(user != null && user.role === 'ADMIN')?<div>
-                    <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton}><span>Ingredients</span></Button>
-                    <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton}><span>Groups</span></Button>
-                    <Button color={"inherit"} href={'/admin/orders'} className={classes.menuButton}><span>Orders</span></Button>
+                    <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton} key={'/admin/ingredients'}><span>Ingredients</span></Button>
+                    <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton} key={'/admin/groups'}><span>Groups</span></Button>
+                    <Button color={"inherit"} href={'/admin/orders'} className={classes.menuButton} key={'/admin/orders'}><span>Orders</span></Button>
                 </div> : ''}
-
-                <Tooltip title="4 items in the basket">
-                    <BasketDialog>
-
-                    </BasketDialog>
-                </Tooltip>
-
-
+                <BasketDialog/>
                 <Button color={"inherit"} href={'/build'} className={classes.menuButton}><span>BUILD</span></Button>
                 {(user == null)?(isPageWide400 ? SECTIONS_GUEST.map(({title, href}) => {
-                    return <Button color={"inherit"} href={href} className={classes.menuButton}><span>{title}</span></Button>
+                    return <Button color={"inherit"} href={href} className={classes.menuButton} key={href}><span>{title}</span></Button>
                 }) : ''):''}
 
                 {(user !== null)? <div>
-                    <Button href={'/userpage'}><span> <Avatar className={classes.orange} >{user.name.charAt(0)}</Avatar></span></Button>
+                    <Button href={'/userpage'} key={'/userpage'}><span> <Avatar className={classes.orange} >{user.name.charAt(0)}</Avatar></span></Button>
                     <Button onClick={e => {performSignOut()}}><ExitToApp className={classes.exitIcon}/> </Button>
                 </div>:''}
 

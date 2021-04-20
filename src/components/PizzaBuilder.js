@@ -158,7 +158,6 @@ function PizzaBuilder() {
 
 
     const fetchGroups = () => {
-        console.log("fetch")
         dispatch(fetchAllGroups());
         dispatch(fetchAllIngredients());
     }
@@ -173,7 +172,6 @@ function PizzaBuilder() {
     const user = useSelector(selectUser);
 
     const pizzaTotalSum = () => {
-        console.log(ingredients)
         const res = ingredients !== [] ? ingredients.reduce((a, b) => {
             return (a + b.price * b.howMany)
         }, 0) : 0;
@@ -224,7 +222,7 @@ function PizzaBuilder() {
                                         <TextField
                                             className={classes.textField}
                                             label="Pizza name"
-                                            variant="filled"
+                                            variant={"filled"}
                                             value={pizzaName}
                                             onChange={(event => setPizzaName(event.target.value))}
                                             helperText={
@@ -238,7 +236,7 @@ function PizzaBuilder() {
                                     <Button
                                         variant={"outlined"}
                                         color={"primary"}
-                                        fullWidth={true}
+                                        fullWidth
                                         className={classes.pizzaButton}
                                         onClick={e => createNewPattern()}
                                         disabled={status === "loading"}
@@ -259,7 +257,7 @@ function PizzaBuilder() {
                                 <Grid item xs={10}>
                                     <TextField
                                         className={classes.ingrTextField}
-                                        variant="filled"
+                                        variant={"filled"}
                                         margin="normal"
                                         required
                                         id="image"
@@ -270,7 +268,7 @@ function PizzaBuilder() {
                                         autoFocus
                                         onChange={e => setPizzaImage(e.target.value)}
                                         helperText={
-                                            validateImageUrl(pizzaImage)
+                                            validateImageUrl(pizzaImage) ? '' : validateImageUrl(pizzaImage)
                                         }
                                         error={!validPizzaImage}
                                     />

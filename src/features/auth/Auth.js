@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 
 import API from '../../api/Api';
-import {Role} from "./Role";
 
 // Initial state
 const initialState = {
@@ -35,8 +34,6 @@ export const signUpUser = createAsyncThunk(
 export const updateUser = createAsyncThunk(
     UPDATE_USER,
     async userData => {
-        console.log("Here - " + API.defaults.headers.common)
-
         const response = await API.put('/update-user', userData);
         return {user: response.data};
     }

@@ -35,13 +35,6 @@ TabPanel.propTypes = {
     value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -63,11 +56,9 @@ export default function IngredientGroupTabs(props) {
     };
 
     const tabPanel = (index, ingredients) => {
-        console.log("HERE1 - " + ingredients)
         const ingres = ingredients.map((ingr) => new Ingredient(ingr.uuid, ingr.groupUuid, ingr.name, ingr.price, ingr.spicy, ingr.vegetarian, ingr.vegan, ingr.photoUrl))
-        console.log("HERE2 - " + ingres)
-        return <TabPanel value={value} index={index}>
-            <IngredientGridList plusCallback={props.plusCallback} minusCallback={props.minusCallback} ingredients={ingres} />
+        return <TabPanel value={value} index={index} key={index}>
+            <IngredientGridList plusCallback={props.plusCallback} minusCallback={props.minusCallback} ingredients={ingres} key={index}/>
         </TabPanel>
     }
 
@@ -75,14 +66,10 @@ export default function IngredientGroupTabs(props) {
         <div className={classes.root}>
             <AppBar position="static"
                     value={value}
-                    variant="fullWidth"
-                    onChange={handleChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered>
+                    onChange={handleChange}>
                 <Tabs value={value} onChange={handleChange}>
                     {props.groups != null && props.groups.map((group,i)=>
-                        <Tab className={classes.tab} label={group.label} {...a11yProps(i)} />
+                        <Tab className={classes.tab} label={group.label} key={i}/>
                     )}
                 </Tabs>
             </AppBar>
