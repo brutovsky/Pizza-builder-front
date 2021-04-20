@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -15,19 +13,6 @@ import PaymentForm from './PaymentForm';
 import Review from './Review';
 import Header from "../Header";
 import Footer from "../Footer";
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -66,16 +51,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Basket', 'Address info', 'Payment Info'];
 
 function getStepContent(step) {
     switch (step) {
         case 0:
-            return <AddressForm />;
-        case 1:
-            return <PaymentForm />;
-        case 2:
             return <Review />;
+        case 1:
+            return <AddressForm />;
+        case 2:
+            return <PaymentForm  />;
         default:
             throw new Error('Unknown step');
     }

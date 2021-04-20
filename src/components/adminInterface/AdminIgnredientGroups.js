@@ -60,19 +60,22 @@ export default function AdminIngredientGroups() {
 
     // Validation
     const [validGroupName, setValidGroupName] = useState(true);
+    const [validGroupLabel, setValidGroupLabel] = useState(true);
     const validate = () =>{
         const isValidName = groupName != "";
         setValidGroupName(isValidName);
 
-        return isValidName;
+        const isValidGroupLabel = groupLabel != "";
+        setValidGroupLabel(isValidGroupLabel);
+
+        return isValidName && isValidGroupLabel;
     }
     //
 
     const [groupName, setGroupName] = useState('');
-    const [groupLabel, setGroupLabel] = useState('');
+    const [groupLabel, setGroupLabel] = useState('🍉');
 
     const fetchGroups = () =>{
-        console.log("fetch")
         dispatch(fetchAllGroups());
     }
 
@@ -80,11 +83,12 @@ export default function AdminIngredientGroups() {
         if(validate()){
             dispatch(createGroup({
                 uuid : "",
-                name: groupName
+                name: groupName,
+                label: groupLabel
             })).then(unwrapResult)
                 .then(originalPromiseResult => {
                     console.log(originalPromiseResult)
-                    showSnack("success","Group successfullt created !");
+                    showSnack("success","Group successfully created !");
                 })
                 .catch(rejectedValueOrSerializedError => {
                     showSnack("error","Something went wrong :/");
@@ -121,6 +125,7 @@ export default function AdminIngredientGroups() {
                                 label="Group name"
                                 name="name"
                                 fullWidth
+                                value={groupName}
                                 autoFocus
                                 onChange={e => setGroupName(e.target.value)}
                                 helperText={
@@ -140,13 +145,19 @@ export default function AdminIngredientGroups() {
                                 name="name"
                                 fullWidth
                                 autoFocus
+                                value={groupLabel}
                                 onChange={e => setGroupLabel(e.target.value)}
+                                helperText={
+                                    groupLabel == "" ? "Group label is requires":""
+                                }
+                                error={!validGroupLabel}
                             />
                         </Grid>
                         <Button
                             fullWidth
                             variant="contained"
                             color="primary"
+                            disabled={groupsStatus === "loading"}
                             onClick={event => createNewGroup()}
                         >
                             Create new group
@@ -158,7 +169,7 @@ export default function AdminIngredientGroups() {
                                 <List>
                                     {groups !== null && groups.map((group) => (
                                         <ListItem key={group.name}>
-                                            <Typography>🍉</Typography>
+                                            <Typography>{group.label}</Typography>
                                             <ListItemText className={classes.listItemText}
                                                           primary={group.name}
                                             />
@@ -175,17 +186,7 @@ export default function AdminIngredientGroups() {
                     </Container>
                 </Container>
             </main>
-            {/* Footer */}
             <Footer/>
-            {/* End footer */}
         </React.Fragment>
-    );
-}
-
-function generate(element) {
-    return [0, 1, 2].map((value) =>
-        React.cloneElement(element, {
-            key: value,
-        }),
     );
 }

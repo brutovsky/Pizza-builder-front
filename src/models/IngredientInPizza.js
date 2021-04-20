@@ -1,7 +1,13 @@
 export default class IngredientInPizza {
-    constructor(name, howMany, url) {
+    constructor(uuid, groupUuid, name, price, spicy, vegetarian, vegan, photoUrl, howMany) {
+        this.uuid = uuid;
+        this.groupUuid = uuid;
         this.name = name;
-        this.url = url;
+        this.price = price;
+        this.spicy = spicy === null ? false : spicy;
+        this.vegetarian = vegetarian === null ? false : vegetarian;
+        this.vegan = vegan === null ? false : vegan;
+        this.photoUrl = photoUrl;
         this.howMany = howMany;
     }
 

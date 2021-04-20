@@ -1,13 +1,17 @@
 import IngredientInPizza from "./IngredientInPizza";
 
 export default class Ingredient {
-    constructor(name, group, description, url) {
+    constructor(uuid, groupUuid, name, price, spicy, vegetarian, vegan, photoUrl) {
+        this.uuid = uuid;
+        this.groupUuid = uuid;
         this.name = name;
-        this.group = group;
-        this.description = description;
-        this.url = url;
+        this.price = price;
+        this.spicy = spicy;
+        this.vegetarian = vegetarian;
+        this.vegan = vegan;
+        this.photoUrl = photoUrl;
     }
     ingredient(howMany){
-        return new IngredientInPizza(this.name,howMany,this.url);
+        return new IngredientInPizza(this.uuid, this.groupUuid, this.name, this.price, this.spicy, this.vegetarian, this.vegan, this.photoUrl,howMany);
     }
 }

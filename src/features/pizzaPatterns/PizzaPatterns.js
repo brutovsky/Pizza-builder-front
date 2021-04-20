@@ -5,21 +5,44 @@ import API from "../../api/Api";
 const initialState = {
     status: 'waiting',
     error: null,
-    patterns: null
+    patterns: []
 }
 
 // Thunk prefixes
 const FETCH_ALL_PATTERNS = 'pizzaPatterns/fetchAll';
+const CREATE_PATTERN = 'pizzaPatterns/create';
+const CONFIRM_PATTERN = 'pizzaPatterns/confirm';
 
 // Thunks
 export const fetchAllPatterns = createAsyncThunk(
     FETCH_ALL_PATTERNS,
     async () => {
-        const response = await API.get('/all-patterns');
+        const response = await API.get('/patterns/all');
         console.log(response);
         return {patterns: response.data};
     }
 )
+
+export const createPattern = createAsyncThunk(
+    CREATE_PATTERN,
+    async patternData => {
+        console.log(patternData);
+        const response = await API.post('/patterns/add', patternData);
+        console.log(response);
+        return {pattern: response.data};
+    }
+)
+
+export const confirmPizzaPattern = createAsyncThunk(
+    CONFIRM_PATTERN,
+    async confirmData => {
+        const response = await API.post('/patterns/confirm/'+confirmData.uuid);
+        console.log(response);
+        return {pattern: response.data};
+    }
+)
+
+///patterns/confirm/{patternUuid}
 
 // Slice
 const pizzaPatternsSlice = createSlice({
@@ -38,12 +61,31 @@ const pizzaPatternsSlice = createSlice({
             state.status = 'failed';
             console.log(action.error);
         },
+        [createPattern.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [createPattern.fulfilled]: (state, action) => {
+            Object.assign(state,  {...state, status : 'succeeded', patterns : [...state.patterns, action.payload.pattern]});
+        },
+        [createPattern.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [confirmPizzaPattern.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [confirmPizzaPattern.fulfilled]: (state, action) => {
+            state.status = 'succeeded'
+        },
+        [confirmPizzaPattern.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
     },
 })
 
 // Selectors
 export const selectStatus = state => state.pizzaPatterns.status
-export const selectError = state => state.pizzaPatterns.error
 export const selectPatterns = state => state.pizzaPatterns.patterns
 //
 export default pizzaPatternsSlice.reducer;

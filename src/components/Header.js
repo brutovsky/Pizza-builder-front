@@ -21,6 +21,7 @@ import {
     selectUser,
     signInUser
 } from '../features/auth/Auth'
+import BasketDialog from "./basket/BasketDialog";
 
 const TITLE = 'Home'
 
@@ -51,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
     },
     howManyText: {
         textAlign: 'center',
-    },
-    basketIcon: {
-        paddingRight: 5
     },
     exitIcon: {
         paddingRight: 5,
@@ -101,12 +99,9 @@ export default function Header() {
                 </div> : ''}
 
                 <Tooltip title="4 items in the basket">
-                    <Button color={"inherit"} href={'/checkout'} className={classes.basket}>
-                        {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
-                        <Typography className={classes.howManyText} variant={"h5"}>
-                            $34.06
-                        </Typography>
-                    </Button>
+                    <BasketDialog>
+
+                    </BasketDialog>
                 </Tooltip>
 
 

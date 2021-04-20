@@ -43,28 +43,23 @@ export default function IngredientInPizza(props) {
     const classes = useStyles();
     const theme = useTheme();
 
-    useEffect(() => {
-        // Update the document title using the browser API
-        document.title = `You clicked ${props.ingr.howMany} times`;
-    });
-
     return (
         <Card className={classes.card}>
 
             <CardMedia
                 className={classes.media}
-                image={props.ingr.url}
-                title={props.ingr.name}
+                image={props.ingredientInPizza.photoUrl}
+                title={props.ingredientInPizza.name}
             >
                 <Box mx={4.2} border={1}  className={classes.howManyBox} borderRadius="50%">
                     <Typography className={classes.howManyText} variant={"body2"}>
-                        {props.ingr.howMany}
+                        {props.ingredientInPizza.howMany}
                     </Typography>
                 </Box>
-                <IconButton onClick={(e) => props.minusCallback(props.ingr)} >
+                <IconButton onClick={(e) => props.minusCallback(props.ingredientInPizza)} >
                     <RemoveCircle/>
                 </IconButton>
-                <IconButton onClick={(e) => props.plusCallback(props.ingr)}>
+                <IconButton onClick={(e) => props.plusCallback(props.ingredientInPizza)}>
                     <AddCircle/>
                 </IconButton>
             </CardMedia>

@@ -4,16 +4,13 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
 import Header from "../Header";
 import Footer from "../Footer";
 import TextField from "@material-ui/core/TextField";
-import {validateEmail, validatePassword} from "../utils/Validation";
+import {validateEmail, validateImageUrl, validatePassword} from "../utils/Validation";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import PizzaCard from "../cards/PizzaCard";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -21,16 +18,30 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import {
+    createGroup,
+    createIngredient,
+    fetchAllIngredients,
+    fetchAllGroups,
+    selectGroups,
+    selectStatus,
+    selectIngredients
+} from "../../features/ingredients/Ingredients";
+import {useDispatch, useSelector} from "react-redux";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import {unwrapResult} from "@reduxjs/toolkit";
+import {snack} from "../utils/CustomSnackBar";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        minHeight: '76vh',
-    },
-    footer: {
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(6),
+        minHeight: '79vh',
     },
     addIngr: {
         padding: theme.spacing(8, 0, 6),
@@ -40,50 +51,123 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: 600
     },
     ingrTextField: {
-        minWidth: 200,
+        minWidth: 150,
         margin: 4
     },
     formControl: {
         margin: theme.spacing(3),
     },
+    listGroups: {
+        alignContent: "center",
+        justifyContent: "center",
+        marginTop: 20,
+        marginBottom: 20
+    },
+    ingrCard: {
+        margin: 10,
+        minWidth: 280
+    }
 }));
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function AdminIngredienst() {
     const classes = useStyles();
 
-    const [ingrImage, setIngrImage] = useState('');
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) => {
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
+    // Methods
+    const fetchGroups = () => {
+        console.log("fetch")
+        dispatch(fetchAllGroups());
+    }
+
+    const fetchIngredients = () => {
+        console.log("fetch")
+        dispatch(fetchAllIngredients());
+    }
+
+    const createNewIngredient = () => {
+        if (validate()) {
+            dispatch(createIngredient({
+                uuid: "",
+                groupUuid: ingrGroup,
+                name: ingrName,
+                price: ingrPrice,
+                spicy: ingrChecks.spicy,
+                vegetarian: ingrChecks.vegeterian,
+                vegan: ingrChecks.vegan,
+                photoUrl: ingrImage
+            })).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(originalPromiseResult)
+                    showSnack("success", "Ingredient successfully created !");
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    showSnack("error", "Something went wrong :/");
+                    console.log(rejectedValueOrSerializedError)
+                });
+        }
+    }
+    // Validation
+    const [validIngrName, setValidIngrName] = useState(true);
+    const [validIngrPrice, setValidIngrPrice] = useState(true);
+    const [validIngrImage, setValidIngrImage] = useState(true);
+    const [validIngrGroup, setValidIngrGroup] = useState(true);
+    const validate = () => {
+        const isValiIngrdName = ingrName != "";
+        setValidIngrName(isValiIngrdName);
+
+        const isValidIngrPrice = ingrPrice != "";
+        setValidIngrPrice(isValidIngrPrice);
+
+        const isValidIngrGroup = ingrGroup != "";
+        setValidIngrGroup(isValidIngrGroup);
+
+        const isValidIngrImage = validateImageUrl(ingrImage) === true;
+        setValidIngrImage(isValidIngrImage);
+
+        return isValiIngrdName && isValidIngrPrice && isValidIngrGroup && isValidIngrImage;
+    }
+    // Effects
+    useEffect(() => {
+        fetchIngredients();
+        fetchGroups();
+    }, []);
+    // Redux
+    const dispatch = useDispatch();
+    const status = useSelector(selectStatus);
+    const groups = useSelector(selectGroups);
+    const ingredients = useSelector(selectIngredients);
+    // Fields
+    const [ingrImage, setIngrImage] = useState('https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg');
     const [ingrGroup, setIngrGroup] = useState('');
-    const [ingrName, setIngrName] = useState('');
-    const [ingrPrice, setIngrPrice] = useState('');
-
-    const handleCheckChange = (event) => {
-        setIngrChecks({...ingrChecks, [event.target.name]: event.target.checked});
-    };
-
+    const [ingrName, setIngrName] = useState('melon');
+    const [ingrPrice, setIngrPrice] = useState('300.0');
     const [ingrChecks, setIngrChecks] = useState({
         spicy: false,
         vegeterian: false,
         vegan: false,
     });
-
-    const handleImageChange = (event) => {
-        console.log(event.target.files[0])
-        setIngrImage({
-            file: URL.createObjectURL(event.target.files[0])
-        })
-        console.log(URL.createObjectURL(event.target.files[0]))
-    }
+    const handleCheckChange = (event) => {
+        setIngrChecks({...ingrChecks, [event.target.name]: event.target.checked});
+    };
+    //
     return (
         <React.Fragment>
             <CssBaseline/>
             <Header/>
             <main>
-                <Container className={classes.root} maxWidth="md">
+                <Container className={classes.root}>
                     <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
                         Create new ingredient
                     </Typography>
+                    {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                     <Grid container spacing={1} className={classes.addIngr}>
                         <Grid item xs={12} sm={12} md={6}>
                             <Grid container spacing={1}>
@@ -94,12 +178,14 @@ export default function AdminIngredienst() {
                                         margin="normal"
                                         required
                                         id="image"
-                                        label="Ingr image"
+                                        label="Ingredient image"
                                         fullWidth
-                                        defaultValue="https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg'"
+                                        defaultValue="https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg"
                                         name="image"
                                         autoFocus
                                         onChange={e => setIngrImage(e.target.value)}
+                                        helperText={validateImageUrl(ingrImage)}
+                                        error={!validIngrImage}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -115,10 +201,14 @@ export default function AdminIngredienst() {
                                 required
                                 id="name"
                                 label="Ingr name"
-                                defaultValue="melon"
+                                value={ingrName}
                                 name="name"
                                 autoFocus
                                 onChange={e => setIngrName(e.target.value)}
+                                helperText={
+                                    ingrName == "" ? "Name is requires" : ""
+                                }
+                                error={!validIngrName}
                             />
                             <CurrencyTextField
                                 className={classes.ingrTextField}
@@ -129,23 +219,23 @@ export default function AdminIngredienst() {
                                 outputFormat="string"
                                 decimalCharacter="."
                                 digitGroupSeparator=","
-                                onChange={(event, value)=> setIngrPrice(value)}
+                                onChange={(event, value) => setIngrPrice(value)}
+                                helperText={
+                                    ingrPrice == "" ? "Price is requires" : ""
+                                }
+                                error={!validIngrPrice}
                             />
                             <FormControl variant="standard" className={classes.ingrTextField}>
-                                <InputLabel id="demo-simple-select-filled-label">Group</InputLabel>
+                                <InputLabel>Group</InputLabel>
                                 <Select
-                                    labelId="demo-simple-select-filled-label"
-                                    id="demo-simple-select-filled"
                                     value={ingrGroup}
                                     onChange={(e) => {
                                         setIngrGroup(e.target.value)
                                     }}
+                                    error={!validIngrGroup}
                                 >
-                                    <MenuItem value={'cheese'}>Cheese</MenuItem>
-                                    <MenuItem value={'meat'}>Meat</MenuItem>
-                                    <MenuItem value={'vegetables'}>Vegetable</MenuItem>
-                                    <MenuItem value={'sauce'}>Sauce</MenuItem>
-                                    <MenuItem value={'bread'}>Bread</MenuItem>
+                                    {groups !== null && groups.map((group) => <MenuItem
+                                        value={group.uuid}>{group.name}</MenuItem>)}
                                 </Select>
                             </FormControl>
                             <div>
@@ -159,7 +249,8 @@ export default function AdminIngredienst() {
                                         />
                                         <FormControlLabel
                                             control={<Checkbox checked={ingrChecks.vegeterian}
-                                                               onChange={handleCheckChange} name="vegeterian"/>}
+                                                               onChange={handleCheckChange}
+                                                               name="vegeterian"/>}
                                             label="Vegeterian"
                                         />
                                         <FormControlLabel
@@ -176,13 +267,40 @@ export default function AdminIngredienst() {
                             fullWidth
                             variant="contained"
                             color="primary"
+                            onClick={event => createNewIngredient()}
+                            disabled={status === "loading"}
                         >
                             Create
                         </Button>
                     </Grid>
-                    <Container className={classes.cardGrid} maxWidth="md">
+                    <Container className={classes.listGroups} maxWidth="md">
                         <Grid container spacing={4}>
-                            {cards.map((card) => <p>{card}</p>)}
+                            {ingredients !== null && ingredients.map((ingr) => (
+                                <Card key={ingr.name} xs={12} sm={6} md={4} className={classes.ingrCard}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image={ingr.photoUrl}
+                                            title={ingr.name}
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                {ingr.name}
+                                            </Typography>
+                                            <Typography><b>Price: </b>{ingr.price}$</Typography>
+                                            {ingr.spicy && <Typography>Spicy 🌶️</Typography>}
+                                            {ingr.vegetarian && <Typography>Vegetarian 🥦</Typography>}
+                                            {ingr.vegan && <Typography>Vegan 🥑</Typography>}
+                                        </CardContent>
+                                    </CardActionArea>
+                                    <CardActions>
+                                        <IconButton edge="end" aria-label="delete">
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </CardActions>
+                                </Card>
+                            ))}
                         </Grid>
                     </Container>
                 </Container>

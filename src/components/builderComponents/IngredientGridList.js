@@ -47,7 +47,7 @@ export default function IngredientGridList(props) {
             <GridList cellHeight={180} className={classes.gridList} cols={isPageWide1400 ? 3 : (isPageWide600 ? 2 : 1)}>
                 {props.ingredients.map((ingr) => (
                     <GridListTile key={ingr.name} className={classes.tile}>
-                        <img src={ingr.url} alt={ingr.description} />
+                        <img src={ingr.photoUrl}/>
                         <GridListTileBar
                             title={ingr.name}
                             actionIcon={

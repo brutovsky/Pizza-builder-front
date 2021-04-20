@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import IngredientGridList from "./IngredientGridList";
+import Ingredient from "../../models/Ingredient";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -62,8 +63,11 @@ export default function IngredientGroupTabs(props) {
     };
 
     const tabPanel = (index, ingredients) => {
+        console.log("HERE1 - " + ingredients)
+        const ingres = ingredients.map((ingr) => new Ingredient(ingr.uuid, ingr.groupUuid, ingr.name, ingr.price, ingr.spicy, ingr.vegetarian, ingr.vegan, ingr.photoUrl))
+        console.log("HERE2 - " + ingres)
         return <TabPanel value={value} index={index}>
-            <IngredientGridList plusCallback={props.plusCallback} minusCallback={props.minusCallback} ingredients={ingredients} />
+            <IngredientGridList plusCallback={props.plusCallback} minusCallback={props.minusCallback} ingredients={ingres} />
         </TabPanel>
     }
 
@@ -77,18 +81,14 @@ export default function IngredientGroupTabs(props) {
                     textColor="primary"
                     centered>
                 <Tabs value={value} onChange={handleChange}>
-                    <Tab className={classes.tab} label="🧀" {...a11yProps(0)} />
-                    <Tab className={classes.tab} label="🍖" {...a11yProps(1)} />
-                    <Tab className={classes.tab} label="🍅" {...a11yProps(2)} />
-                    <Tab className={classes.tab} label="🥣" {...a11yProps(3)} />
-                    <Tab className={classes.tab} label="🍞" {...a11yProps(4)} />
+                    {props.groups != null && props.groups.map((group,i)=>
+                        <Tab className={classes.tab} label={group.label} {...a11yProps(i)} />
+                    )}
                 </Tabs>
             </AppBar>
-            {tabPanel(0,props.ingredients.filter((it) => it.group === 'cheese'))}
-            {tabPanel(1,props.ingredients.filter((it) => it.group === 'meat'))}
-            {tabPanel(2,props.ingredients.filter((it) => it.group === 'vegetables'))}
-            {tabPanel(3,props.ingredients.filter((it) => it.group === 'sauce'))}
-            {tabPanel(4,props.ingredients.filter((it) => it.group === 'side'))}
+            {props.groups != null && props.groups.map((group,i)=>
+                {return props.ingredients != null ?  tabPanel(i,props.ingredients.filter(it=>it.groupName === group.name)) : ''}
+            )}
         </div>
     );
 }

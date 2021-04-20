@@ -21,3 +21,15 @@ export const validatePassword = (password) =>
     }
     return true;
 }
+
+export const validateImageUrl = (url) =>
+{
+    if(url == ""){
+        return "Image is required";
+    }
+    else if (!(/(https?:\/\/.*\.(?:png|jpg))/.test(url)))
+    {
+        return "Wrong image format";
+    }
+    return true;
+}

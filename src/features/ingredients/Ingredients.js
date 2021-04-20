@@ -6,12 +6,15 @@ const initialState = {
     status: 'waiting',
     error: null,
     groups: null,
-    ingredientsInGroups: null
+    ingredientsInGroups: null,
+    ingredients: null
 }
 
 // Thunk prefixes
 const FETCH_ALL_GROUPS = 'groups/fetchAll';
+const FETCH_ALL_INGREDIENTS = 'ingredients/fetchAll';
 const CREATE_GROUP = 'groups/create';
+const CREATE_INGREDIENT = 'ingredients/create'
 
 // Thunks
 export const fetchAllGroups = createAsyncThunk(
@@ -23,11 +26,29 @@ export const fetchAllGroups = createAsyncThunk(
     }
 )
 
+export const fetchAllIngredients = createAsyncThunk(
+    FETCH_ALL_INGREDIENTS,
+    async () => {
+        const response = await API.get('/products/all');
+        console.log(response);
+        return {ingredients: response.data};
+    }
+)
+///products/all
+
 export const createGroup = createAsyncThunk(
     CREATE_GROUP,
     async groupData => {
         const response = await API.post('/products/group/add', groupData);
         return {group: response.data};
+    }
+)
+
+export const createIngredient = createAsyncThunk(
+    CREATE_INGREDIENT,
+    async ingredientData => {
+        const response = await API.post('/products/add', ingredientData);
+        return {ingredient: response.data};
     }
 )
 
@@ -41,8 +62,8 @@ const ingredientsSlice = createSlice({
             state.status = 'loading'
         },
         [fetchAllGroups.fulfilled]: (state, action) => {
-            const newState = {...initialState, status : 'succeeded', groups : action.payload.groups};
-            Object.assign(state, newState);
+            console.log(action.payload.groups)
+            Object.assign(state, {...state, status : 'succeeded', groups : action.payload.groups});
         },
         [fetchAllGroups.rejected]: (state, action) => {
             state.status = 'failed';
@@ -58,6 +79,26 @@ const ingredientsSlice = createSlice({
             state.status = 'failed';
             console.log(action.error);
         },
+        [fetchAllIngredients.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [fetchAllIngredients.fulfilled]: (state, action) => {
+            Object.assign(state, {...state, status : 'succeeded', ingredients : action.payload.ingredients});
+        },
+        [fetchAllIngredients.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [createIngredient.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [createIngredient.fulfilled]: (state, action) => {
+            Object.assign(state, {...state, status : 'succeeded', ingredients : [...state.ingredients, action.payload.ingredient]});
+        },
+        [createIngredient.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
     },
 })
 
@@ -65,5 +106,6 @@ const ingredientsSlice = createSlice({
 export const selectStatus = state => state.ingredients.status
 export const selectError = state => state.ingredients.error
 export const selectGroups = state => state.ingredients.groups
+export const selectIngredients = state => state.ingredients.ingredients
 //
 export default ingredientsSlice.reducer;

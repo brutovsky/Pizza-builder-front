@@ -7,8 +7,16 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 import Grid from "@material-ui/core/Grid";
-import React from "react";
+import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import {
+    confirmPizzaPattern
+} from "../../features/pizzaPatterns/PizzaPatterns";
+import {useDispatch} from "react-redux";
+import {unwrapResult} from "@reduxjs/toolkit";
+
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -45,28 +53,82 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PizzaCard({pizza}) {
+export default function PizzaCard(props) {
     const classes = useStyles();
 
-    return <Grid item key={pizza.uuid} xs={12} sm={6} md={4}>
+    const dispatch = useDispatch();
+
+    const [pizza, setPizza] = useState(props.pattern);
+    const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i=>i.ingredient));
+    const [confirmed, setConfirmed] = useState(props.pattern.confirmed);
+
+    const pizzaLabels = () =>{
+        console.log(props.pattern)
+        let labels = '';
+        const spicy = ingredients.find(i=>i.spicy);
+        const vegetarian = ingredients.every(i=>i.vegetarian);
+        const vegan = ingredients.every(i=>i.vegan);
+        if(spicy){labels += '🌶️'};
+        if(vegetarian && !vegan){labels += '🥛'};
+        if((vegan && !vegetarian)||(vegan && vegetarian)){labels += '🥦'};
+        if(!vegetarian && !vegan){labels += '🍖'};
+        return labels;
+    }
+
+    const groupBy = function(xs, key) {
+        return xs.reduce(function(rv, x) {
+            (rv[x[key]] = rv[x[key]] || []).push(x);
+            return rv;
+        }, {});
+    };
+
+    const groupIngredients = groupBy(ingredients, 'groupName');
+
+    const pizzaPrice = pizza.ingredients.reduce((a,b)=>{return (a + b.ingredient.price*b.quantity)}, 0);
+
+    const confirmPattern = () =>{
+        dispatch(confirmPizzaPattern({
+            uuid: pizza.uuid
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult)
+                //showSnack("success","You successfully signed up !");
+            })
+            .catch(rejectedValueOrSerializedError => {
+                //showSnack("error","Wrong password or something :/");
+                console.log(rejectedValueOrSerializedError)
+            })
+    }
+
+    return <Grid item key={props.pattern.uuid} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
             <CardMedia
                 className={classes.cardMedia}
-                image="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80"
-                title="Image title"
+                image={pizza.photoUrl}
+                title={pizza.name}
             />
             <CardContent className={classes.cardContent}>
                 <Typography gutterBottom variant="h5" component="h2">
-                    {pizza.name} 🥦
+                    {pizza.name} {pizzaLabels()}
+                </Typography>
+                <Typography gutterBottom variant="h5" component="h2">
+                    {props.user != null && props.user.role === 'Admin' &&
+                        <div>
+                            <FormControlLabel
+                                control={<Checkbox checked={confirmed} onChange={e => confirmPattern()} name="Connfirmed" />}
+                                label="Confirmed"
+                            />
+                        </div>
+                    }
                 </Typography>
                 <Divider/>
                 <Typography variant={"body1"}>
                     Tasty pizza description.
                 </Typography>
                 <Divider/>
-                <Typography variant={"body2"}><span><b>🧀 Mozarella, Feta, Parmezan, Cheddar</b></span></Typography>
-                <Typography variant={"body2"}><span><b>🍖 No</b></span></Typography>
-                <Typography variant={"body2"}><span><b>🥣 Al`fredo</b></span></Typography>
+                {Object.keys(groupIngredients).map((key)=>
+                    <Typography variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i=>i.name).join(', ')}</b></span></Typography>
+                )}
 
                 <ButtonGroup variant="outlined" color="primary"
                              aria-label="contained primary button group">
@@ -79,7 +141,7 @@ export default function PizzaCard({pizza}) {
 
             <CardActions className={classes.cardActions} disableSpacing={false}>
                 <Typography color={"secondary"} variant={"body1"}>
-                    <b><i>Price: 99.9$</i></b>
+                    <b><i>Price: {pizzaPrice}$</i></b>
                 </Typography>
                 <Button size="large" color="primary">
                     Modify

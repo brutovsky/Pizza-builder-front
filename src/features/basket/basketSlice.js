@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    pizzaInBasket: 0
+    status: 'waiting',
+    error: null,
+    patterns: []
 }
 
 export const basketSlice = createSlice({

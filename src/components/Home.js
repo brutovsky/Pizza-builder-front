@@ -25,6 +25,9 @@ import {
     selectStatus,
     selectPatterns
 } from "../features/pizzaPatterns/PizzaPatterns";
+import {
+    selectUser
+} from "../features/auth/Auth";
 import PizzaCard from "./cards/PizzaCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,9 +64,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    root:{
+        minHeight: '79vh',
+    }
 }));
-
-//const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function Home() {
     const classes = useStyles();
@@ -80,11 +84,13 @@ function Home() {
 
     const pizzaPatterns = useSelector(selectPatterns);
 
+    const user = useSelector(selectUser);
+
     return (
         <React.Fragment>
             <CssBaseline/>
             <Header/>
-            <main>
+            <main className={classes.root}>
                 {/* Hero unit */}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
@@ -114,7 +120,7 @@ function Home() {
                     {/* End hero unit */}
                     <Grid container spacing={4}>
                         {pizzaPatterns !== null && pizzaPatterns.map((pattern) => (
-                            <PizzaCard></PizzaCard>
+                            <PizzaCard pattern={pattern} user={user}/>
                         ))}
                     </Grid>
                 </Container>
