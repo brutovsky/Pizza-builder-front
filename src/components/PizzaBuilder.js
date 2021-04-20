@@ -19,13 +19,16 @@ import {
     fetchAllIngredients,
     selectGroups,
     selectIngredients,
-    selectStatus
 } from "../features/ingredients/Ingredients";
 
 import {
-    createPattern
+    createPattern,
+    selectStatus
 } from "../features/pizzaPatterns/PizzaPatterns";
 import {selectUser} from "../features/auth/Auth";
+import {validateEmail, validateImageUrl} from "./utils/Validation";
+import {snack} from "./utils/CustomSnackBar";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -68,22 +71,51 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(2),
     },
     pizzaButton: {
-        height: '100%',
+        marginTop: theme.spacing(1),
     },
     textField: {
         width: "100%"
     },
     priceText: {
-        paddingLeft: theme.spacing(5),
+        paddingLeft: theme.spacing(3),
         paddingTop: theme.spacing(2),
+    },
+    pizzaImage: {
+        maxWidth: 100,
+        maxHeight: 150
     }
 }));
 
 function PizzaBuilder() {
     const classes = useStyles();
 
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) => {
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
+
+    // Validation
+    const [validPizzaName, setValidPizzaName] = useState(true);
+    const [validPizzaImage, setValidPizzaImage] = useState(true);
+    const validate = () => {
+        const isValidName = pizzaName != '';
+        setValidPizzaName(isValidName);
+
+        const isValidIngrImage = validateImageUrl(pizzaImage) === true;
+        setValidPizzaImage(isValidIngrImage);
+
+        return isValidName && isValidIngrImage;
+    }
+    //
+
     const [ingredients, setIngredients] = useState([]);
     const [pizzaName, setPizzaName] = useState('');
+    const [pizzaImage, setPizzaImage] = useState('https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg');
 
     const addIngredient = (ingr) => {
         setIngredients(oldIngredients => [...oldIngredients, ingr]);
@@ -119,17 +151,18 @@ function PizzaBuilder() {
 
     const ingredientTile = (ingredientInPizza) => {
         return <Grid key={ingredientInPizza.name} item xs={3}>
-            <IngredientInPizzaCard ingredientInPizza={ingredientInPizza} plusCallback={handlePlusIngr} minusCallback={handleMinusIngr}/>
+            <IngredientInPizzaCard ingredientInPizza={ingredientInPizza} plusCallback={handlePlusIngr}
+                                   minusCallback={handleMinusIngr}/>
         </Grid>
     }
 
 
-    const fetchGroups = () =>{
+    const fetchGroups = () => {
         console.log("fetch")
         dispatch(fetchAllGroups());
         dispatch(fetchAllIngredients());
     }
-    useEffect(()=>fetchGroups(), []);
+    useEffect(() => fetchGroups(), []);
 
     const dispatch = useDispatch();
 
@@ -141,23 +174,34 @@ function PizzaBuilder() {
 
     const pizzaTotalSum = () => {
         console.log(ingredients)
-        const res = ingredients !== [] ? ingredients.reduce((a,b)=>{return (a + b.price*b.howMany)}, 0) : 0;
+        const res = ingredients !== [] ? ingredients.reduce((a, b) => {
+            return (a + b.price * b.howMany)
+        }, 0) : 0;
         return Number(res).toFixed(2);
     }
 
     const createNewPattern = () => {
-        console.log(ingredients)
-        console.log(pizzaName)
-        console.log(user)
-        dispatch(createPattern(
-            {
-                uuid: '',
-                name: pizzaName,
-                userEntityUUID:user.uuid,
-                ingredients:ingredients.map((ingr)=>{return {ingredientUuid:ingr.uuid, quantity:ingr.howMany}}),
-                photoUrl: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.readersdigest.ca%2Fwp-content%2Fuploads%2Fsites%2F14%2F2010%2F12%2Fpepperoni-pizza.jpg'
-            }
-        ))
+        if (validate()) {
+            dispatch(createPattern(
+                {
+                    uuid: '',
+                    name: pizzaName,
+                    userEntityUUID: user.uuid,
+                    ingredients: ingredients.map((ingr) => {
+                        return {ingredientUuid: ingr.uuid, quantity: ingr.howMany}
+                    }),
+                    photoUrl: pizzaImage
+                }
+            )).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(originalPromiseResult)
+                    showSnack("success", "You successfully built a new pizza !");
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    showSnack("error", "Something went wrong :/ Maybe try another name");
+                    console.log(rejectedValueOrSerializedError)
+                })
+        }
     }
 
     return (
@@ -165,6 +209,7 @@ function PizzaBuilder() {
             <CssBaseline/>
             <Header/>
             <main className={classes.root}>
+                {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                 <Grid container spacing={0}>
                     <Grid item sm={12} xs={12} md={6} lg={6}>
                         <Container>
@@ -182,12 +227,22 @@ function PizzaBuilder() {
                                             variant="filled"
                                             value={pizzaName}
                                             onChange={(event => setPizzaName(event.target.value))}
+                                            helperText={
+                                                pizzaName == '' ? 'Pizza name is required' : ''
+                                            }
+                                            error={!validPizzaName}
                                         />
                                     </form>
                                 </Grid>
                                 <Grid item sm={12} xs={12} md={5} lg={5}>
-                                    <Button variant={"outlined"} color={"primary"} fullWidth={true}
-                                            className={classes.pizzaButton} onClick={e => createNewPattern()}>
+                                    <Button
+                                        variant={"outlined"}
+                                        color={"primary"}
+                                        fullWidth={true}
+                                        className={classes.pizzaButton}
+                                        onClick={e => createNewPattern()}
+                                        disabled={status === "loading"}
+                                    >
                                         Save pattern
                                     </Button>
                                 </Grid>
@@ -197,6 +252,30 @@ function PizzaBuilder() {
                                     {ingredients.map((ingr) => ingredientTile(ingr))}
                                 </Grid>
                             </Container>
+                            <Grid container spacing={3}>
+                                <Grid item xs={2}>
+                                    <img className={classes.pizzaImage} src={pizzaImage}/>
+                                </Grid>
+                                <Grid item xs={10}>
+                                    <TextField
+                                        className={classes.ingrTextField}
+                                        variant="filled"
+                                        margin="normal"
+                                        required
+                                        id="image"
+                                        label="Pizza Image"
+                                        fullWidth
+                                        value={pizzaImage}
+                                        name="image"
+                                        autoFocus
+                                        onChange={e => setPizzaImage(e.target.value)}
+                                        helperText={
+                                            validateImageUrl(pizzaImage)
+                                        }
+                                        error={!validPizzaImage}
+                                    />
+                                </Grid>
+                            </Grid>
                         </Container>
                     </Grid>
                     <Grid item sm={12} xs={12} md={6} lg={6}>

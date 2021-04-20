@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -29,6 +29,8 @@ import {
     selectUser
 } from "../features/auth/Auth";
 import PizzaCard from "./cards/PizzaCard";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -86,12 +88,13 @@ function Home() {
 
     const user = useSelector(selectUser);
 
+    const [onlyUserPatterns, setOnlyUserPatterns] = useState(false);
+
     return (
         <React.Fragment>
             <CssBaseline/>
             <Header/>
             <main className={classes.root}>
-                {/* Hero unit */}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -103,21 +106,26 @@ function Home() {
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
-                                    <Button variant="contained" color="primary">
+                                    <Button variant="contained" color="primary" href={"/build"}>
                                         Create your own pattern
                                     </Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="outlined" color="primary">
+                                    <Button variant="outlined" color="primary" href={"/checkout"}>
                                         Checkout
                                     </Button>
                                 </Grid>
+                                {user != null && <Grid item>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={onlyUserPatterns} onChange={e => setOnlyUserPatterns(!onlyUserPatterns)} name="Connfirmed" />}
+                                        label="Show only my patterns"
+                                    />
+                                </Grid>}
                             </Grid>
                         </div>
                     </Container>
                 </div>
                 <Container className={classes.cardGrid} maxWidth="md">
-                    {/* End hero unit */}
                     <Grid container spacing={4}>
                         {pizzaPatterns !== null && pizzaPatterns.map((pattern) => (
                             <PizzaCard pattern={pattern} user={user}/>
@@ -125,9 +133,7 @@ function Home() {
                     </Grid>
                 </Container>
             </main>
-            {/* Footer */}
             <Footer/>
-            {/* End footer */}
         </React.Fragment>
     );
 }

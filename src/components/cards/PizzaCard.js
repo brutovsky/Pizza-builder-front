@@ -58,6 +58,8 @@ export default function PizzaCard(props) {
 
     const dispatch = useDispatch();
 
+    const [pizzaSize, setPizzaSize] = useState('1');
+
     const [pizza, setPizza] = useState(props.pattern);
     const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i=>i.ingredient));
     const [confirmed, setConfirmed] = useState(props.pattern.confirmed);
@@ -71,7 +73,6 @@ export default function PizzaCard(props) {
         if(spicy){labels += '🌶️'};
         if(vegetarian && !vegan){labels += '🥛'};
         if((vegan && !vegetarian)||(vegan && vegetarian)){labels += '🥦'};
-        if(!vegetarian && !vegan){labels += '🍖'};
         return labels;
     }
 
@@ -91,12 +92,11 @@ export default function PizzaCard(props) {
             uuid: pizza.uuid
         })).then(unwrapResult)
             .then(originalPromiseResult => {
-                console.log(originalPromiseResult)
-                //showSnack("success","You successfully signed up !");
+                setConfirmed(true);
+                console.log(originalPromiseResult);
             })
             .catch(rejectedValueOrSerializedError => {
-                //showSnack("error","Wrong password or something :/");
-                console.log(rejectedValueOrSerializedError)
+                console.log(rejectedValueOrSerializedError);
             })
     }
 
@@ -112,7 +112,7 @@ export default function PizzaCard(props) {
                     {pizza.name} {pizzaLabels()}
                 </Typography>
                 <Typography gutterBottom variant="h5" component="h2">
-                    {props.user != null && props.user.role === 'Admin' &&
+                    {(props.user != null && props.user.role === 'ADMIN') &&
                         <div>
                             <FormControlLabel
                                 control={<Checkbox checked={confirmed} onChange={e => confirmPattern()} name="Connfirmed" />}
@@ -123,27 +123,26 @@ export default function PizzaCard(props) {
                 </Typography>
                 <Divider/>
                 <Typography variant={"body1"}>
-                    Tasty pizza description.
+                    Ingredients:
                 </Typography>
                 <Divider/>
                 {Object.keys(groupIngredients).map((key)=>
                     <Typography variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i=>i.name).join(', ')}</b></span></Typography>
                 )}
-
-                <ButtonGroup variant="outlined" color="primary"
-                             aria-label="contained primary button group">
-                    <Button variant={"contained"}>Small</Button>
-                    <Button>Medium</Button>
-                    <Button>Large</Button>
-                </ButtonGroup>
-
+                <Divider/>
             </CardContent>
-
+            <ButtonGroup variant="outlined" color="primary"
+                         aria-label="contained primary button group" className={classes.cardActions}>
+                <Button variant={pizzaSize === '1' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('1')}>Small</Button>
+                <Button variant={pizzaSize === '2' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('2')}>Medium</Button>
+                <Button variant={pizzaSize === '3' ? 'contained' : 'outlined'} onClick={e => setPizzaSize('3')}>Large</Button>
+            </ButtonGroup>
             <CardActions className={classes.cardActions} disableSpacing={false}>
+
                 <Typography color={"secondary"} variant={"body1"}>
                     <b><i>Price: {pizzaPrice}$</i></b>
                 </Typography>
-                <Button size="large" color="primary">
+                <Button size="large" color="primary" >
                     Modify
                 </Button>
                 <Button size="large" color="primary">

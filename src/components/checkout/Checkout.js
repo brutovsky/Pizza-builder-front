@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -6,13 +6,13 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
-import PaymentForm from './PaymentForm';
 import Review from './Review';
 import Header from "../Header";
 import Footer from "../Footer";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../features/auth/Auth";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
             marginLeft: 'auto',
             marginRight: 'auto',
         },
+        minHeight: '72vh',
     },
     paper: {
         marginTop: theme.spacing(3),
@@ -51,32 +52,52 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const steps = ['Basket', 'Address info', 'Payment Info'];
-
-function getStepContent(step) {
-    switch (step) {
-        case 0:
-            return <Review />;
-        case 1:
-            return <AddressForm />;
-        case 2:
-            return <PaymentForm  />;
-        default:
-            throw new Error('Unknown step');
-    }
-}
-
 export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = () => {
-        setActiveStep(activeStep + 1);
+        if(validate()){
+            setActiveStep(activeStep + 1);
+        }
     };
 
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
+
+    const user = useSelector(selectUser);
+    const [address, setAddress] = useState({...user.address, firstName: '', lastName:''});
+
+    const updateAddress = (field, value) =>{
+        setAddress({...address, [field]:value});
+    }
+
+    // Validation
+    const isValidName = address.firstName != '';
+    const isValidSurname = address.lastName != '';
+    const isValidCity = address.city != '';
+    const isValidFlat = address.flat != '';
+    const isValidBuild = address.build != '';
+    const isValidStreet = address.street != '';
+
+    const validate = () => {
+        return isValidName && isValidSurname && isValidCity && isValidFlat && isValidBuild && isValidStreet;
+    }
+    //
+
+    const steps = ['Shipping address', 'Review your order'];
+
+    function getStepContent(step) {
+        switch (step) {
+            case 0:
+                return <AddressForm address={address} updateAddress={updateAddress} validate/>;
+            case 1:
+                return <Review />;
+            default:
+                throw new Error('Unknown step');
+        }
+    }
 
     return (
         <React.Fragment>

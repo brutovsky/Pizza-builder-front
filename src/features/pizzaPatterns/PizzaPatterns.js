@@ -54,6 +54,7 @@ const pizzaPatternsSlice = createSlice({
             state.status = 'loading'
         },
         [fetchAllPatterns.fulfilled]: (state, action) => {
+            console.log("PATTERNS: " + action.payload.patterns);
             const newState = {...initialState, status : 'succeeded', patterns : action.payload.patterns};
             Object.assign(state, newState);
         },

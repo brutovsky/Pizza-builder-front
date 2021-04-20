@@ -93,9 +93,10 @@ export default function Header() {
                 </Typography>
 
 
-                {(user != null && user.role === 'Admin')?<div>
+                {(user != null && user.role === 'ADMIN')?<div>
                     <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton}><span>Ingredients</span></Button>
                     <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton}><span>Groups</span></Button>
+                    <Button color={"inherit"} href={'/admin/orders'} className={classes.menuButton}><span>Orders</span></Button>
                 </div> : ''}
 
                 <Tooltip title="4 items in the basket">

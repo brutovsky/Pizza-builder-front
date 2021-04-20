@@ -99,10 +99,7 @@ const forgetUser = (state) => {
 
 const saveUser = (state, action) => {
     state.status = 'succeeded'
-    //
-    const userWithRole = {...action.payload.user, role:Role.Admin};
-    //
-    state.user = userWithRole;
+    state.user = action.payload.user;
     saveState(state);
 };
 

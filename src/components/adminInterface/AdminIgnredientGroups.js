@@ -52,7 +52,7 @@ export default function AdminIngredientGroups() {
     const [snackOpen, setSnackOpen] = React.useState(false);
     const [snackSeverity, setSnackSeverity] = React.useState('success');
     const [snackText, setSnackText] = React.useState('Mellon');
-    const showSnack = (severity, text) =>{
+    const showSnack = (severity, text) => {
         setSnackSeverity(severity);
         setSnackText(text);
         setSnackOpen(true);
@@ -61,7 +61,7 @@ export default function AdminIngredientGroups() {
     // Validation
     const [validGroupName, setValidGroupName] = useState(true);
     const [validGroupLabel, setValidGroupLabel] = useState(true);
-    const validate = () =>{
+    const validate = () => {
         const isValidName = groupName != "";
         setValidGroupName(isValidName);
 
@@ -75,29 +75,29 @@ export default function AdminIngredientGroups() {
     const [groupName, setGroupName] = useState('');
     const [groupLabel, setGroupLabel] = useState('🍉');
 
-    const fetchGroups = () =>{
+    const fetchGroups = () => {
         dispatch(fetchAllGroups());
     }
 
-    const createNewGroup = () =>{
-        if(validate()){
+    const createNewGroup = () => {
+        if (validate()) {
             dispatch(createGroup({
-                uuid : "",
+                uuid: "",
                 name: groupName,
                 label: groupLabel
             })).then(unwrapResult)
                 .then(originalPromiseResult => {
                     console.log(originalPromiseResult)
-                    showSnack("success","Group successfully created !");
+                    showSnack("success", "Group successfully created !");
                 })
                 .catch(rejectedValueOrSerializedError => {
-                    showSnack("error","Something went wrong :/");
+                    showSnack("error", "Something went wrong :/");
                     console.log(rejectedValueOrSerializedError)
                 });
         }
     }
 
-    useEffect(()=>fetchGroups(), []);
+    useEffect(() => fetchGroups(), []);
 
     const dispatch = useDispatch();
 
@@ -114,7 +114,7 @@ export default function AdminIngredientGroups() {
                     <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
                         Create new group
                     </Typography>
-                    {snack(snackOpen,setSnackOpen,snackSeverity,snackText)}
+                    {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={10}>
                             <TextField
@@ -129,7 +129,7 @@ export default function AdminIngredientGroups() {
                                 autoFocus
                                 onChange={e => setGroupName(e.target.value)}
                                 helperText={
-                                    groupName == "" ? "Group name is requires":""
+                                    groupName == "" ? "Group name is requires" : ""
                                 }
                                 error={!validGroupName}
                             />
@@ -148,7 +148,7 @@ export default function AdminIngredientGroups() {
                                 value={groupLabel}
                                 onChange={e => setGroupLabel(e.target.value)}
                                 helperText={
-                                    groupLabel == "" ? "Group label is requires":""
+                                    groupLabel == "" ? "Group label is requires" : ""
                                 }
                                 error={!validGroupLabel}
                             />
@@ -164,25 +164,21 @@ export default function AdminIngredientGroups() {
                         </Button>
                     </Grid>
                     <Container className={classes.listGroups}>
-                        <Grid container>
-                            <div>
-                                <List>
-                                    {groups !== null && groups.map((group) => (
-                                        <ListItem key={group.name}>
-                                            <Typography>{group.label}</Typography>
-                                            <ListItemText className={classes.listItemText}
-                                                          primary={group.name}
-                                            />
-                                            <ListItemSecondaryAction>
-                                                <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon/>
-                                                </IconButton>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </div>
-                        </Grid>
+                        <List>
+                            {groups !== null && groups.map((group) => (
+                                <ListItem key={group.name}>
+                                    <Typography>{group.label}</Typography>
+                                    <ListItemText className={classes.listItemText}
+                                                  primary={group.name}
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" aria-label="delete">
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                            ))}
+                        </List>
                     </Container>
                 </Container>
             </main>
