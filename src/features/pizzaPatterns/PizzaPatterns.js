@@ -10,14 +10,32 @@ const initialState = {
 
 // Thunk prefixes
 const FETCH_ALL_PATTERNS = 'pizzaPatterns/fetchAll';
+const FETCH_USER_PATTERNS = 'pizzaPatterns/fetchUser';
+const FETCH_CONFIRMED_PATTERNS = 'pizzaPatterns/fetchConfirmed';
 const CREATE_PATTERN = 'pizzaPatterns/create';
 const CONFIRM_PATTERN = 'pizzaPatterns/confirm';
 
 // Thunks
 export const fetchAllPatterns = createAsyncThunk(
-    FETCH_ALL_PATTERNS,
+    FETCH_USER_PATTERNS,
     async () => {
         const response = await API.get('/patterns/all');
+        return {patterns: response.data};
+    }
+)
+
+export const fetchUserPatterns = createAsyncThunk(
+    FETCH_ALL_PATTERNS,
+    async () => {
+        const response = await API.get('/patterns/current');
+        return {patterns: response.data};
+    }
+)
+
+export const fetchConfirmedPatterns = createAsyncThunk(
+    FETCH_CONFIRMED_PATTERNS,
+    async () => {
+        const response = await API.get('/patterns/confirmed');
         return {patterns: response.data};
     }
 )
@@ -77,6 +95,26 @@ const pizzaPatternsSlice = createSlice({
             state.status = 'failed';
             console.log(action.error);
         },
+        [fetchUserPatterns.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [fetchUserPatterns.fulfilled]: (state, action) => {
+            Object.assign(state, {...initialState, status : 'succeeded', patterns : action.payload.patterns});
+        },
+        [fetchUserPatterns.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [fetchConfirmedPatterns.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [fetchConfirmedPatterns.fulfilled]: (state, action) => {
+            Object.assign(state, {...initialState, status : 'succeeded', patterns : action.payload.patterns});
+        },
+        [fetchConfirmedPatterns.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        }
     },
 })
 

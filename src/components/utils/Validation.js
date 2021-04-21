@@ -27,9 +27,9 @@ export const validateImageUrl = (url) =>
     if(url == ""){
         return "Image is required";
     }
-    else if (!(/(https?:\/\/.*\.(?:png|jpg))/.test(url)))
+    /*else if (!(/(https?:\/\/.*\.(?:png|jpg))/.test(url)))
     {
         return "Wrong image format";
-    }
+    }*/
     return true;
 }

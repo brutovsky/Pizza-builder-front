@@ -25,7 +25,7 @@ import {
     fetchAllGroups,
     selectGroups,
     selectStatus,
-    selectIngredients
+    selectIngredients, deleteGroup, deleteIngredient
 } from "../../features/ingredients/Ingredients";
 import {useDispatch, useSelector} from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
@@ -162,6 +162,22 @@ export default function AdminIngredienst() {
     const groups = useSelector(selectGroups);
     const ingredients = useSelector(selectIngredients);
     //
+
+    const deleteI = (ingr) => {
+        dispatch(deleteIngredient({
+            uuid: ingr.uuid
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult)
+                dispatch(fetchAllIngredients());
+                showSnack("success", "Ingredient successfully deleted !");
+            })
+            .catch(rejectedValueOrSerializedError => {
+                showSnack("error", "Something went wrong :/");
+                console.log(rejectedValueOrSerializedError)
+            });
+    }
+
     return (
         <React.Fragment>
             <CssBaseline/>
@@ -299,7 +315,7 @@ export default function AdminIngredienst() {
                                         </CardContent>
                                     </CardActionArea>
                                     <CardActions>
-                                        <IconButton edge="end" aria-label="delete">
+                                        <IconButton edge="end" aria-label="delete" onClick={event => deleteI(ingr)}>
                                             <DeleteIcon/>
                                         </IconButton>
                                     </CardActions>

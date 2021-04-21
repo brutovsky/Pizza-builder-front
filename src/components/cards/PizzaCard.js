@@ -12,13 +12,13 @@ import {makeStyles} from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import {
-    confirmPizzaPattern
+    confirmPizzaPattern,
 } from "../../features/pizzaPatterns/PizzaPatterns";
+import {
+    addPatternToCart, fetchCart,
+} from "../../features/basket/basketSlice";
 import {useDispatch} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
-import Container from "@material-ui/core/Container";
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -113,6 +113,27 @@ export default function PizzaCard(props) {
             })
     }
 
+    const addPizzaToBasket = () => {
+        console.log("ADD:")
+        console.log({
+            pattern: pizza.uuid,
+            amount: 1,
+            size: parseInt(pizzaSize),
+        })
+        dispatch(addPatternToCart({
+            pattern: pizza.uuid,
+            amount: 1,
+            size: parseInt(pizzaSize),
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                dispatch(fetchCart())
+                console.log(originalPromiseResult);
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError);
+            })
+    }
+
     return <Grid item xs={12} sm={6} md={4}>
         <Card className={classes.card}>
             <CardMedia
@@ -154,10 +175,7 @@ export default function PizzaCard(props) {
                 <Typography color={"secondary"} variant={"body1"}>
                     <b><i>Price: {pizzaPrice}$</i></b>
                 </Typography>
-                <Button size="large" color="primary">
-                    Modify
-                </Button>
-                <Button size="large" color="primary">
+                <Button size="large" color="primary" onClick={event => addPizzaToBasket()}>
                     Buy
                 </Button>
             </CardActions>

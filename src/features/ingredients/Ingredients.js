@@ -15,7 +15,8 @@ const FETCH_ALL_GROUPS = 'groups/fetchAll';
 const FETCH_ALL_INGREDIENTS = 'ingredients/fetchAll';
 const CREATE_GROUP = 'groups/create';
 const CREATE_INGREDIENT = 'ingredients/create'
-
+const DELETE_INGREDIENT = 'ingredients/delete'
+const DELETE_GROUP = 'groups/delete'
 // Thunks
 export const fetchAllGroups = createAsyncThunk(
     FETCH_ALL_GROUPS,
@@ -46,6 +47,22 @@ export const createIngredient = createAsyncThunk(
     CREATE_INGREDIENT,
     async ingredientData => {
         const response = await API.post('/products/add', ingredientData);
+        return {ingredient: response.data};
+    }
+)
+
+export const deleteIngredient = createAsyncThunk(
+    DELETE_INGREDIENT,
+    async ingredientData => {
+        const response = await API.delete('/products/' + ingredientData.uuid);
+        return {ingredient: response.data};
+    }
+)
+
+export const deleteGroup = createAsyncThunk(
+    DELETE_GROUP,
+    async groupData => {
+        const response = await API.delete('/products/group/' + groupData.uuid);
         return {ingredient: response.data};
     }
 )
@@ -93,6 +110,26 @@ const ingredientsSlice = createSlice({
             Object.assign(state, {...state, status : 'succeeded', ingredients : [...state.ingredients, action.payload.ingredient]});
         },
         [createIngredient.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [deleteIngredient.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [deleteIngredient.fulfilled]: (state, action) => {
+            Object.assign(state, {...state, status : 'succeeded', ingredients : [...state.ingredients, action.payload.ingredient]});
+        },
+        [deleteIngredient.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [deleteGroup.pending]: (state) => {
+            state.status = 'loading';
+        },
+        [deleteGroup.fulfilled]: (state, action) => {
+            state.status = 'succeeded';
+        },
+        [deleteGroup.rejected]: (state, action) => {
             state.status = 'failed';
             console.log(action.error);
         },

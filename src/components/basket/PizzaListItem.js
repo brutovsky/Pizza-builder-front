@@ -1,4 +1,3 @@
-import Typography from "@material-ui/core/Typography";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,6 +9,9 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import {makeStyles} from "@material-ui/core/styles";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
+import {useDispatch} from "react-redux";
+import {decrement, deletePatternFromBasket, fetchCart, increment} from "../../features/basket/basketSlice";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
     ingrImage: {
@@ -22,24 +24,75 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PizzaListItem(props) {
     const classes = useStyles();
-    const [pizza, setPizza] = useState(props.pizza);
+
+    const dispatch = useDispatch()
+
+    const incrementPattern = () => {
+        console.log(props.pizza)
+        dispatch(increment({
+            uuid: props.pizza.uuid,
+            size: props.pizza.size,
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                dispatch(fetchCart())
+                console.log(originalPromiseResult);
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError);
+            })
+    }
+
+    const decrementPattern = () => {
+        if (props.pizza.quantity <= 1) {
+            deletePattern();
+        } else
+            dispatch(decrement({
+                uuid: props.pizza.uuid,
+                size: props.pizza.size,
+            })).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    dispatch(fetchCart())
+                    console.log(originalPromiseResult);
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    console.log(rejectedValueOrSerializedError);
+                })
+    }
+
+    const deletePattern = () => {
+        dispatch(deletePatternFromBasket({
+            uuid: props.pizza.uuid,
+            size: props.pizza.size,
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                dispatch(fetchCart())
+                console.log(originalPromiseResult);
+            })
+            .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError);
+            })
+    }
+
     return <>
-        <ListItem className={classes.listItem} key={pizza.name}>
+        <ListItem className={classes.listItem} key={props.pizza.name}>
             <ListItemAvatar>
                 <Avatar>
-                    <img className={classes.ingrImage} src={pizza.photoUrl}/>
+                    <img className={classes.ingrImage} src={props.pizza.photoUrl}/>
                 </Avatar>
             </ListItemAvatar>
             <ListItemText fullWidth
                           className={classes.itemText}
-                          primary={pizza.name}
-                          secondary={(pizza.size) + ' x' + pizza.amount}
+                          primary={props.pizza.name}
+                          secondary={(props.pizza.size) + 'size X ' + props.pizza.quantity + ' = ' + (Number(props.pizza.price).toFixed(2))}
             />
             <ListItemSecondaryAction>
-                <IconButton edge="end">
+                <IconButton edge="end" onClick={event => deletePattern()}>
+                    <DeleteIcon/>
+                </IconButton>
+                <IconButton edge="end" onClick={event => decrementPattern()}>
                     <RemoveIcon/>
                 </IconButton>
-                <IconButton edge="end">
+                <IconButton edge="end" onClick={event => incrementPattern()}>
                     <AddIcon/>
                 </IconButton>
             </ListItemSecondaryAction>

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         height: '100vh',
     },
     image: {
-        backgroundImage: 'url(https://previews.123rf.com/images/ninamalyna/ninamalyna1212/ninamalyna121200182/16740124-funny-guy-with-pizza.jpg)',
+        backgroundImage: 'url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallup.net%2Fwp-content%2Fuploads%2F2017%2F11%2F17%2F371885-food-pizza.jpg&f=1&nofb=1)',
         backgroundRepeat: 'no-repeat',
         backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -108,7 +108,7 @@ export default function SignIn() {
                 .then(originalPromiseResult => {
                     console.log(originalPromiseResult)
                     showSnack("success","You successfully signed up !");
-                    history.push("/home");
+                    history.push("/userpage");
                 })
                 .catch(rejectedValueOrSerializedError => {
                     showSnack("error","Wrong password or something :/");

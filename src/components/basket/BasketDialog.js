@@ -13,8 +13,9 @@ import {ShoppingBasket} from "@material-ui/icons";
 import List from "@material-ui/core/List";
 import PizzaListItem from "./PizzaListItem";
 import {useDispatch, useSelector} from "react-redux";
-import {selectPatterns,fetchCart} from "../../features/basket/basketSlice";
+import {selectPatterns, fetchCart} from "../../features/basket/basketSlice";
 import Tooltip from "@material-ui/core/Tooltip";
+import {selectUser} from "../../features/auth/Auth";
 
 const styles = (theme) => ({
     root: {
@@ -49,13 +50,13 @@ const useBasketStyles = makeStyles((theme) => ({
 
 
 const DialogTitle = withStyles(styles)((props) => {
-    const { children, classes, onClose, ...other } = props;
+    const {children, classes, onClose, ...other} = props;
     return (
         <MuiDialogTitle disableTypography className={classes.root} {...other}>
             <Typography variant="h6">{children}</Typography>
             {onClose ? (
                 <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
-                    <CloseIcon />
+                    <CloseIcon/>
                 </IconButton>
             ) : null}
         </MuiDialogTitle>
@@ -75,29 +76,14 @@ const DialogActions = withStyles((theme) => ({
     },
 }))(MuiDialogActions);
 
-/*
-{groups !== null && groups.map((group) => (
-                                        <ListItem key={group.name}>
-                                            <Typography>{group.label}</Typography>
-                                            <ListItemText className={classes.listItemText}
-                                                          primary={group.name}
-                                            />
-                                            <ListItemSecondaryAction>
-                                                <IconButton edge="end" aria-label="delete">
-                                                    <DeleteIcon/>
-                                                </IconButton>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    ))}
- */
-
 export default function BasketDialog(props) {
     const classes = useBasketStyles();
 
-    useEffect(()=>dispatch(fetchCart()), []);
+    useEffect(() => dispatch(fetchCart()), []);
 
     const dispatch = useDispatch()
     const patterns = useSelector(selectPatterns)
+    const user = useSelector(selectUser)
 
     const [open, setOpen] = React.useState(false);
 
@@ -108,18 +94,23 @@ export default function BasketDialog(props) {
         setOpen(false);
     };
 
+    const totalSum = () => {
+        return Number(patterns.reduce((a, b) => (a + b.price), 0)).toFixed(2);
+    }
+
     let isPageWide700 = useMediaQuery('(min-width: 700px)');
 
     return (
         <div>
-            <Tooltip title="4 items in the basket">
+            {user != null &&
+            <Tooltip title={(patterns != null ? patterns.length : 0) + " items in the basket"}>
                 <Button color={"inherit"} onClick={handleClickOpen} className={classes.basket}>
                     {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
                     <Typography className={classes.howManyText} variant={"h5"}>
-                        $34.06
+                        {patterns != null ? totalSum() : 0}$
                     </Typography>
                 </Button>
-            </Tooltip>
+            </Tooltip>}
             <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} fullWidth={true}>
                 <DialogTitle id="customized-dialog-title" onClose={handleClose}>
                     Basket
@@ -127,17 +118,19 @@ export default function BasketDialog(props) {
                 <DialogContent dividers>
                     <List>
                         {patterns != null && patterns.map(p =>
-                            <PizzaListItem key={p.pattern} pizza={{name:p.pattern, amount:p.amount, size:p.size, photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}/>
+                            <PizzaListItem key={p.name} pizza={{
+                                uuid: p.patternUuid,
+                                name: p.name,
+                                quantity: p.quantity,
+                                price: p.price,
+                                size: p.size,
+                                photoUrl: p.photoUrl
+                            }}
+                            />
                         )}
-                        {
-                            /*
-                             <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
-                        <PizzaListItem pizza={{name:"TOOOOOOOOP", photoUrl:"http://kingfisher.scene7.com/is/image/Kingfisher/5055013400359_01c"}}></PizzaListItem>
-                             */
-                        }
                     </List>
                     <Typography gutterBottom>
-                        Total sum: 100$
+                        Total sum: {patterns != null ? totalSum() : 0}$
                     </Typography>
                 </DialogContent>
                 <DialogActions>

@@ -14,7 +14,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
-import {createGroup, fetchAllGroups, selectGroups, selectStatus} from "../../features/ingredients/Ingredients";
+import {
+    createGroup,
+    deleteGroup,
+    fetchAllGroups,
+    selectGroups,
+    selectStatus
+} from "../../features/ingredients/Ingredients";
 import {useDispatch, useSelector} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {snack} from "../utils/CustomSnackBar";
@@ -95,6 +101,21 @@ export default function AdminIngredientGroups() {
 
     const groups = useSelector(selectGroups);
 
+    const deleteG = (group) => {
+        dispatch(deleteGroup({
+            uuid: group.uuid
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                console.log(originalPromiseResult)
+                dispatch(fetchAllGroups());
+                showSnack("success", "Group successfully deleted !");
+            })
+            .catch(rejectedValueOrSerializedError => {
+                showSnack("error", "Something went wrong :/");
+                console.log(rejectedValueOrSerializedError)
+            });
+    }
+
     return (
         <React.Fragment>
             <CssBaseline/>
@@ -161,7 +182,7 @@ export default function AdminIngredientGroups() {
                                                   primary={group.name}
                                     />
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="delete">
+                                        <IconButton edge="end" aria-label="delete" onClick={event => deleteG(group)}>
                                             <DeleteIcon/>
                                         </IconButton>
                                     </ListItemSecondaryAction>

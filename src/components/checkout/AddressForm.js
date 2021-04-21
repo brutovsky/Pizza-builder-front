@@ -15,30 +15,17 @@ export default function AddressForm(props) {
                 Shipping address
             </Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                     <TextField
                         required
-                        id="firstName"
-                        name="firstName"
-                        label="First name"
+                        id="name"
+                        name="name"
+                        label="Your name"
                         fullWidth
                         autoComplete="given-name"
-                        error={props.address.firstName == ''}
-                        value={props.address.firstName}
-                        onChange={e => props.updateAddress('firstName', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        required
-                        id="lastName"
-                        name="lastName"
-                        label="Last name"
-                        fullWidth
-                        autoComplete="family-name"
-                        error={props.address.lastName == ''}
-                        value={props.address.lastName}
-                        onChange={e => props.updateAddress('lastName', e.target.value)}
+                        error={props.address.name == ''}
+                        value={props.address.name}
+                        onChange={e => props.updateAddress('name', e.target.value)}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -90,12 +77,6 @@ export default function AddressForm(props) {
                         error={props.address.flat == ''}
                         value={props.address.flat}
                         onChange={e => props.updateAddress('flat', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControlLabel
-                        control={<Checkbox color="secondary" name="saveAddress" value="yes"/>}
-                        label="Use this address for payment details"
                     />
                 </Grid>
             </Grid>

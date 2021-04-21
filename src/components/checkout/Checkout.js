@@ -11,8 +11,10 @@ import AddressForm from './AddressForm';
 import Review from './Review';
 import Header from "../Header";
 import Footer from "../Footer";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../features/auth/Auth";
+import {fetchCart, placeOrder, selectPatterns} from "../../features/basket/basketSlice";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -56,8 +58,28 @@ export default function Checkout() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
 
+    const dispatch = useDispatch()
+
+    const [checkId, setCheckId] = useState(null);
+
     const handleNext = () => {
-        if(validate()){
+        if(activeStep === 1){
+            dispatch(placeOrder({
+                city: address.city,
+                street: address.street,
+                build: address.build,
+                flat: address.flat,
+            })).then(unwrapResult)
+                .then(originalPromiseResult => {
+                    console.log(originalPromiseResult);
+                    setCheckId(originalPromiseResult.result.checkId)
+                    setActiveStep(activeStep + 1);
+                    dispatch(fetchCart())
+                })
+                .catch(rejectedValueOrSerializedError => {
+                    console.log(rejectedValueOrSerializedError)
+                })
+        }else if(validate()){
             setActiveStep(activeStep + 1);
         }
     };
@@ -67,22 +89,21 @@ export default function Checkout() {
     };
 
     const user = useSelector(selectUser);
-    const [address, setAddress] = useState({...user.address, firstName: '', lastName:''});
+    const [address, setAddress] = useState({...user.address, name: user.name});
 
     const updateAddress = (field, value) =>{
         setAddress({...address, [field]:value});
     }
 
     // Validation
-    const isValidName = address.firstName != '';
-    const isValidSurname = address.lastName != '';
+    const isValidName = address.name != '';
     const isValidCity = address.city != '';
     const isValidFlat = address.flat != '';
     const isValidBuild = address.build != '';
     const isValidStreet = address.street != '';
 
     const validate = () => {
-        return isValidName && isValidSurname && isValidCity && isValidFlat && isValidBuild && isValidStreet;
+        return isValidName && isValidCity && isValidFlat && isValidBuild && isValidStreet;
     }
     //
 
@@ -93,11 +114,13 @@ export default function Checkout() {
             case 0:
                 return <AddressForm address={address} updateAddress={updateAddress} validate/>;
             case 1:
-                return <Review />;
+                return <Review patterns={patterns} address={address}/>;
             default:
                 throw new Error('Unknown step');
         }
     }
+
+    const patterns = useSelector(selectPatterns)
 
     return (
         <React.Fragment>
@@ -122,7 +145,7 @@ export default function Checkout() {
                                     Thank you for your order.
                                 </Typography>
                                 <Typography variant="subtitle1">
-                                    Your order number is #2001539. We have emailed your order confirmation, and will
+                                    Your order number is #{checkId}. We have emailed your order confirmation, and will
                                     send you an update when your order has shipped.
                                 </Typography>
                             </React.Fragment>

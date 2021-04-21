@@ -92,11 +92,9 @@ export default function Header() {
                     {isPageWide700 ? 'Pizza Builder' : ''}
                 </Typography>
 
-
                 {(user != null && user.role === 'ADMIN')?<div>
                     <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton} key={'/admin/ingredients'}><span>Ingredients</span></Button>
                     <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton} key={'/admin/groups'}><span>Groups</span></Button>
-                    <Button color={"inherit"} href={'/admin/orders'} className={classes.menuButton} key={'/admin/orders'}><span>Orders</span></Button>
                 </div> : ''}
                 <BasketDialog/>
                 <Button color={"inherit"} href={'/build'} className={classes.menuButton}><span>BUILD</span></Button>
