@@ -20,6 +20,7 @@ import PizzaCard from "./cards/PizzaCard";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {Link} from "react-router-dom";
+import {snack} from "./utils/CustomSnackBar";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -65,6 +66,16 @@ function Home() {
 
     const dispatch = useDispatch();
 
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) => {
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
+
     const pizzaStatus = useSelector(selectStatus);
 
     const pizzaPatterns = useSelector(selectPatterns);
@@ -106,6 +117,16 @@ function Home() {
         }
     }
 
+    const deletePatternCallback = (pizza, successful) => {
+        console.log(pizza)
+        if(successful){
+            fetchPatterns()
+            showSnack("success", "Pattern successfully deleted !");
+        }else{
+            showSnack("error", "Something went wrong :/");
+        }
+    };
+
     useEffect(() => fetchPatterns(), []);
 
     return (
@@ -113,6 +134,7 @@ function Home() {
             <CssBaseline/>
             <Header/>
             <main className={classes.root}>
+                {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                 <div className={classes.heroContent}>
                     <Container maxWidth="sm">
                         <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -152,7 +174,7 @@ function Home() {
                 <Container className={classes.cardGrid} maxWidth="md">
                     <Grid container spacing={4}>
                         {pizzaPatterns !== null && pizzaPatterns.map((pattern) => (
-                            <PizzaCard pattern={pattern} user={user} key={pattern.uuid}/>
+                            <PizzaCard pattern={pattern} user={user} key={pattern.uuid} deletePatternCallback={deletePatternCallback}/>
                         ))}
                     </Grid>
                 </Container>

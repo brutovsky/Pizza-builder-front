@@ -78,8 +78,9 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(2),
     },
     pizzaImage: {
+        marginTop: 5,
         maxWidth: 100,
-        maxHeight: 150
+        maxHeight: 150,
     }
 }));
 
@@ -239,7 +240,6 @@ function PizzaBuilder() {
                                         variant={"outlined"}
                                         color={"primary"}
                                         fullWidth
-                                        autoFocus={true}
                                         className={classes.pizzaButton}
                                         onClick={e => createNewPattern()}
                                         disabled={status === "loading"}
@@ -255,9 +255,9 @@ function PizzaBuilder() {
                             </Container>
                             <Grid container spacing={3}>
                                 <Grid item xs={2}>
-                                    <img className={classes.pizzaImage} src={pizzaImage} alt={'NO IMAGE'}/>
+                                    <img className={classes.pizzaImage} src={pizzaImage} alt={''}/>
                                 </Grid>
-                                <Grid item xs={10}>
+                                <Grid item xs={12} sm={10}>
                                     <TextField
                                         className={classes.ingrTextField}
                                         variant={"filled"}

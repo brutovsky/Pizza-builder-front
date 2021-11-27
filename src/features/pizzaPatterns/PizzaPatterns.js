@@ -13,6 +13,7 @@ const FETCH_ALL_PATTERNS = 'pizzaPatterns/fetchAll';
 const FETCH_USER_PATTERNS = 'pizzaPatterns/fetchUser';
 const FETCH_CONFIRMED_PATTERNS = 'pizzaPatterns/fetchConfirmed';
 const CREATE_PATTERN = 'pizzaPatterns/create';
+const DELETE_PATTERN = 'pizzaPatterns/delete';
 const CONFIRM_PATTERN = 'pizzaPatterns/confirm';
 
 // Thunks
@@ -44,6 +45,14 @@ export const createPattern = createAsyncThunk(
     CREATE_PATTERN,
     async patternData => {
         const response = await API.post('/patterns/add', patternData);
+        return {pattern: response.data};
+    }
+)
+
+export const deletePattern = createAsyncThunk(
+    CREATE_PATTERN,
+    async patternData => {
+        const response = await API.delete(`/pattern/${patternData.uuid}`);
         return {pattern: response.data};
     }
 )
@@ -83,6 +92,17 @@ const pizzaPatternsSlice = createSlice({
             // Object.assign(state,  {...state, status : 'succeeded', patterns : [...state.patterns, action.payload.pattern]});
         },
         [createPattern.rejected]: (state, action) => {
+            state.status = 'failed';
+            console.log(action.error);
+        },
+        [deletePattern.pending]: (state) => {
+            state.status = 'loading'
+        },
+        [deletePattern.fulfilled]: (state, action) => {
+            //TODO: hmmm
+            // Object.assign(state,  {...state, status : 'succeeded', patterns : [...state.patterns, action.payload.pattern]});
+        },
+        [deletePattern.rejected]: (state, action) => {
             state.status = 'failed';
             console.log(action.error);
         },

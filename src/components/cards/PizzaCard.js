@@ -11,10 +11,14 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {confirmPizzaPattern,} from "../../features/pizzaPatterns/PizzaPatterns";
+import {confirmPizzaPattern, deletePattern, fetchAllPatterns} from "../../features/pizzaPatterns/PizzaPatterns";
 import {addPatternToCart, fetchCart,} from "../../features/basket/basketSlice";
 import {useDispatch} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
+import {fetchAllIngredients} from "../../features/ingredients/Ingredients";
+import DeleteIcon from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton";
+import {snack} from "../utils/CustomSnackBar";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -56,6 +60,16 @@ export default function PizzaCard(props) {
     const classes = useStyles();
 
     const dispatch = useDispatch();
+
+    // SnackBar
+    const [snackOpen, setSnackOpen] = React.useState(false);
+    const [snackSeverity, setSnackSeverity] = React.useState('success');
+    const [snackText, setSnackText] = React.useState('Mellon');
+    const showSnack = (severity, text) => {
+        setSnackSeverity(severity);
+        setSnackText(text);
+        setSnackOpen(true);
+    }
 
     const [pizzaSize, setPizzaSize] = useState('1');
 
@@ -102,6 +116,20 @@ export default function PizzaCard(props) {
                 console.log(originalPromiseResult);
             })
             .catch(rejectedValueOrSerializedError => {
+                console.log(rejectedValueOrSerializedError);
+            })
+    }
+
+    const deletePizzaPattern = () => {
+        dispatch(deletePattern({
+            uuid: pizza.uuid
+        })).then(unwrapResult)
+            .then(originalPromiseResult => {
+                props.deletePatternCallback(pizza, true)
+                console.log(originalPromiseResult);
+            })
+            .catch(rejectedValueOrSerializedError => {
+                props.deletePatternCallback(pizza, false)
                 console.log(rejectedValueOrSerializedError);
             })
     }
@@ -171,6 +199,11 @@ export default function PizzaCard(props) {
                 <Button size="large" color="primary" onClick={event => addPizzaToBasket()}>
                     Buy
                 </Button>
+                {(props.user != null && props.user.role === 'ADMIN') ?
+                    <IconButton edge="end" aria-label="delete" onClick={event => deletePizzaPattern()}>
+                        <DeleteIcon/>
+                    </IconButton>
+                    :""}
             </CardActions>
 
         </Card>
