@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import Header from "../Header";
 import Footer from "../Footer";
 import List from "@material-ui/core/List";
-import {createGroup, fetchAllGroups, selectGroups, selectStatus} from "../../features/ingredients/Ingredients";
+import {fetchAllGroups, selectStatus} from "../../features/ingredients/Ingredients";
 import {useDispatch, useSelector} from "react-redux";
 import {snack} from "../utils/CustomSnackBar";
 import OrderListItem from "./OrderListItem";
@@ -45,7 +45,7 @@ export default function AdminOrders() {
 
     const status = useSelector(selectStatus);
 
-    const orders = [{name:'10'},{name:'20'},{name:'30'}];//useSelector(selectOrders);
+    const orders = [{name:'10'},{name:'20'},{name:'30'}];
 
 
     return (

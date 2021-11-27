@@ -18,6 +18,7 @@ import {useSelector} from "react-redux";
 import {selectUser} from "../features/auth/Auth";
 import AdminIngredienst from "./adminInterface/AdminIngredients";
 import AdminIgnredientGroups from "./adminInterface/AdminIgnredientGroups";
+import AdminOrders from "./adminInterface/AdminOrders";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
 
                     <PrivateRoute exact path='/admin/groups' component={AdminIgnredientGroups} currentUser={currentUser} roles={[Role.Admin]} />
                     <PrivateRoute exact path='/admin/ingredients' component={AdminIngredienst} currentUser={currentUser} roles={[Role.Admin]} />
+                    <PrivateRoute exact path='/admin/orders' component={AdminOrders} currentUser={currentUser} roles={[Role.Admin]} />
                     <PrivateRoute exact path='/build' component={PizzaBuilder} currentUser={currentUser} roles={[Role.User,Role.Admin]}/>
                     <PrivateRoute exact path='/checkout' component={Checkout} currentUser={currentUser} roles={[Role.User,Role.Admin]}/>
                     <PrivateRoute exact path='/userpage' component={UserPage} currentUser={currentUser} roles={[Role.User,Role.Admin]} />

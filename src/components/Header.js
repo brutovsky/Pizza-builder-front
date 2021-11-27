@@ -123,6 +123,7 @@ export default function Header() {
         return (user != null && user.role === 'ADMIN') ? <div>
             {makeButtonLink("/admin/ingredients", "🥑Ingredients")}
             {makeButtonLink("/admin/groups", "🥩Groups")}
+            {makeButtonLink("/admin/orders", "📜Orders")}
         </div> : ''
     }
 
