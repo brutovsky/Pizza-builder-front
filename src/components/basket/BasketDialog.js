@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectPatterns, fetchCart} from "../../features/basket/basketSlice";
 import Tooltip from "@material-ui/core/Tooltip";
 import {selectUser} from "../../features/auth/Auth";
+import {Link} from "react-router-dom";
 
 const styles = (theme) => ({
     root: {
@@ -137,9 +138,9 @@ export default function BasketDialog(props) {
                     <Button variant={"outlined"} autoFocus onClick={handleClose} color="primary">
                         Go back to shopping
                     </Button>
-                    <Button variant={"contained"} autoFocus href={"/checkout"} color="primary">
+                    <Link variant={"contained"} autoFocus color="primary" to={"/checkout"}>
                         Go to checkout
-                    </Button>
+                    </Link>
                 </DialogActions>
             </Dialog>
         </div>

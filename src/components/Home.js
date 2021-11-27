@@ -128,9 +128,9 @@ function Home() {
                                 </Link>
                             </Grid>
                             <Grid item key={"button2"}>
-                                <Button variant="outlined" color="primary" href={"/checkout"}>
+                                <Link variant="outlined" color="primary" to={"/checkout"}>
                                     Checkout
-                                </Button>
+                                </Link>
                             </Grid>
                             {user != null && <Grid item key={"button3"}>
                                 <FormControlLabel

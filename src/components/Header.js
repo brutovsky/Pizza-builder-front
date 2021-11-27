@@ -3,31 +3,23 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {HouseOutlined, LocalPizza, ShoppingBasket, ExitToApp} from "@material-ui/icons";
+import {ExitToApp, LocalPizza} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
 import {Link, useHistory} from "react-router-dom"
-
-import Tooltip from "@material-ui/core/Tooltip";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Avatar from "@material-ui/core/Avatar";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 
 import {useDispatch, useSelector} from "react-redux";
 
-import {
-    signOut,
-    selectUser,
-    signInUser
-} from '../features/auth/Auth'
+import {selectUser, signOut} from '../features/auth/Auth'
 import BasketDialog from "./basket/BasketDialog";
 
-const TITLE = 'Home'
-
 const SECTIONS_GUEST = [
-    {title: 'Sign In', href: '/signin'},
-    {title: 'Sign Up', href: '/signup'},
+    {title: 'Sign In', path: '/signin'},
+    {title: 'Sign Up', path: '/signup'},
 ]
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
     menuButton: {
         minWidth: 80,
         marginRight: theme.spacing(2),
+        '&:hover': {
+            backgroundColor: theme.palette.primary.light,
+            color: '#FFF'
+        }
     },
     basket: {
         minWidth: 80,
@@ -61,6 +57,14 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.getContrastText(deepOrange[500]),
         backgroundColor: deepOrange[500],
     },
+    link: {
+        '&:hover': {
+            color: '#FFF'
+        },
+        '&:visited': {
+            color: '#FFF'
+        }
+    }
 }));
 
 export default function Header() {
@@ -81,31 +85,64 @@ export default function Header() {
         history.push("/home");
     }
 
+    const makeButtonLink = (path, title) => {
+        return <Link className={classes.link} to={path}>
+            <Button color={"inherit"} className={classes.menuButton}><Typography>{title}</Typography></Button>
+        </Link>
+    }
+
+    const makeGuestSection = () => {
+        return isPageWide400 ? SECTIONS_GUEST.map(({title, path}) => {
+            return makeButtonLink(path, title)
+        }) : ''
+    }
+
+    const makeUserSection = () => {
+        return (user == null) ? makeGuestSection() :
+            <div>
+                <Button href={'/userpage'} key={'/userpage'}>
+                    <span>
+                        <Avatar className={classes.orange}>
+                            {user.name.charAt(0)}
+                        </Avatar>
+                    </span>
+                </Button>
+                <Button onClick={e => {
+                    performSignOut()
+                }}>
+                    <ExitToApp className={classes.exitIcon}/>
+                </Button>
+            </div>
+    }
+
+    const makeAdminSection = () => {
+        return (user != null && user.role === 'ADMIN') ? <div>
+            {makeButtonLink("/admin/ingredients", "BUILD")}
+            {makeButtonLink("/groups", "Groups")}
+        </div> : ''
+    }
+
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton edge="start" color="inherit" aria-label="menu" href="/home">
-                    <LocalPizza className={classes.icon}/>
-                </IconButton>
+
+                <Link className={classes.link} to={"/home"}>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <LocalPizza className={classes.icon}/>
+                    </IconButton>
+                </Link>
 
                 <Typography variant="h6" className={classes.title}>
                     {isPageWide700 ? 'Pizza Builder' : ''}
                 </Typography>
 
-                {(user != null && user.role === 'ADMIN')?<div>
-                    <Button color={"inherit"} href={'/admin/ingredients'} className={classes.menuButton} key={'/admin/ingredients'}><span>Ingredients</span></Button>
-                    <Button color={"inherit"} href={'/admin/groups'} className={classes.menuButton} key={'/admin/groups'}><span>Groups</span></Button>
-                </div> : ''}
-                <BasketDialog/>
-                <Button color={"inherit"} href={'/build'} className={classes.menuButton}><span>BUILD</span></Button>
-                {(user == null)?(isPageWide400 ? SECTIONS_GUEST.map(({title, href}) => {
-                    return <Button color={"inherit"} href={href} className={classes.menuButton} key={href}><span>{title}</span></Button>
-                }) : ''):''}
+                {makeAdminSection()}
 
-                {(user !== null)? <div>
-                    <Button href={'/userpage'} key={'/userpage'}><span> <Avatar className={classes.orange} >{user.name.charAt(0)}</Avatar></span></Button>
-                    <Button onClick={e => {performSignOut()}}><ExitToApp className={classes.exitIcon}/> </Button>
-                </div>:''}
+                <BasketDialog/>
+
+                {makeButtonLink("/build", "BUILD")}
+
+                {makeUserSection()}
 
             </Toolbar>
         </AppBar>
