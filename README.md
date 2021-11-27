@@ -1,3 +1,8 @@
+# To run it in Docker
+1. Build the docker image `docker build -t pizza:front .`
+2. Run the image `docker run -it --rm -v %cd%:/app -v /app/node_modules -p 3001:3000 -e CHOKIDAR_USEPOLLING=true pizza:front`
+3. React app is accessible via https://localhost:3001
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

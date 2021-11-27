@@ -19,6 +19,7 @@ import {
 import PizzaCard from "./cards/PizzaCard";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -122,9 +123,9 @@ function Home() {
                         </Typography>
                         <Grid container spacing={2} justify="center" className={classes.heroButtons}>
                             <Grid item key={"button1"}>
-                                <Button variant="contained" color="primary" href={"/build"}>
+                                <Link variant="contained" color={"primary"} to={"/build"}>
                                     Create your own pattern
-                                </Button>
+                                </Link>
                             </Grid>
                             <Grid item key={"button2"}>
                                 <Button variant="outlined" color="primary" href={"/checkout"}>
