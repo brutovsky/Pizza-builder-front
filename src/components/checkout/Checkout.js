@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../features/auth/Auth";
 import {fetchCart, placeOrder, selectPatterns} from "../../features/basket/basketSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -148,6 +149,9 @@ export default function Checkout() {
                                     Your order number is #{checkId}. We have emailed your order confirmation, and will
                                     send you an update when your order has shipped.
                                 </Typography>
+                                <Link to={'/home'}>
+                                    Back to shopping🍕🍔🍟🌭🥑.
+                                </Link>
                             </React.Fragment>
                         ) : (
                             <React.Fragment>

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT
+
 export default axios.create({
-    baseURL: `http://localhost:8080`,
+    baseURL: API_ENDPOINT,
     headers: { 'Authorization': localStorage.getItem('token')}
 });

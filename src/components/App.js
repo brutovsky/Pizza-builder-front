@@ -1,18 +1,13 @@
 import React from 'react';
 
-import {
-    Route,
-    Switch,
-    Redirect,
-    withRouter
-} from "react-router-dom"
+import {Redirect, Route, Switch, withRouter} from "react-router-dom"
 
 import '../styles/App.sass';
 
 import SignIn from "./SignIn";
 import Home from "./Home";
 import SignUp from "./SignUp";
-import { ThemeProvider } from '@material-ui/core/styles';
+import {ThemeProvider} from '@material-ui/core/styles';
 import theme from "./Theme";
 import PizzaBuilder from "./PizzaBuilder";
 import UserPage from "./UserPage";
@@ -23,7 +18,6 @@ import {useSelector} from "react-redux";
 import {selectUser} from "../features/auth/Auth";
 import AdminIngredienst from "./adminInterface/AdminIngredients";
 import AdminIgnredientGroups from "./adminInterface/AdminIgnredientGroups";
-import AdminOrders from "./adminInterface/AdminOrders";
 
 function App() {
 
@@ -36,10 +30,10 @@ function App() {
                     <Route exact path='/signin' component={SignIn} />
                     <Route exact path='/signup' component={SignUp} />
                     <Route exact path='/home' component={Home} />
-                    <Route exact path='/build' component={PizzaBuilder} />
 
                     <PrivateRoute exact path='/admin/groups' component={AdminIgnredientGroups} currentUser={currentUser} roles={[Role.Admin]} />
                     <PrivateRoute exact path='/admin/ingredients' component={AdminIngredienst} currentUser={currentUser} roles={[Role.Admin]} />
+                    <PrivateRoute exact path='/build' component={PizzaBuilder} currentUser={currentUser} roles={[Role.User,Role.Admin]}/>
                     <PrivateRoute exact path='/checkout' component={Checkout} currentUser={currentUser} roles={[Role.User,Role.Admin]}/>
                     <PrivateRoute exact path='/userpage' component={UserPage} currentUser={currentUser} roles={[Role.User,Role.Admin]} />
 

@@ -100,13 +100,17 @@ export default function Header() {
     const makeUserSection = () => {
         return (user == null) ? makeGuestSection() :
             <div>
-                <Button href={'/userpage'} key={'/userpage'}>
+                {makeButtonLink("/home", "🍕Patterns")}
+                {makeButtonLink("/build", "🔨Build")}
+                <Link className={classes.link} to={'/userpage'}>
+                    <Button href={'/userpage'} key={'/userpage'}>
                     <span>
                         <Avatar className={classes.orange}>
                             {user.name.charAt(0)}
                         </Avatar>
                     </span>
-                </Button>
+                    </Button>
+                </Link>
                 <Button onClick={e => {
                     performSignOut()
                 }}>
@@ -117,8 +121,8 @@ export default function Header() {
 
     const makeAdminSection = () => {
         return (user != null && user.role === 'ADMIN') ? <div>
-            {makeButtonLink("/admin/ingredients", "BUILD")}
-            {makeButtonLink("/groups", "Groups")}
+            {makeButtonLink("/admin/ingredients", "🥑Ingredients")}
+            {makeButtonLink("/admin/groups", "🥩Groups")}
         </div> : ''
     }
 
@@ -138,9 +142,7 @@ export default function Header() {
 
                 {makeAdminSection()}
 
-                <BasketDialog/>
-
-                {makeButtonLink("/build", "BUILD")}
+                {(user !== null && user.role !== 'ADMIN') ? <BasketDialog/> : ''}
 
                 {makeUserSection()}
 

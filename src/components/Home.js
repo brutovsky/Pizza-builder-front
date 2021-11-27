@@ -73,19 +73,19 @@ function Home() {
 
     const [onlyUserPatterns, setOnlyUserPatterns] = useState(false);
 
-    const onChangeOnlyUserPatterns = () =>{
+    const onChangeOnlyUserPatterns = () => {
         const value = onlyUserPatterns;
-        if(!value){
+        if (!value) {
             dispatch(fetchUserPatterns());
             setOnlyUserPatterns(!value);
-        }else{
-            if(user == null){
+        } else {
+            if (user == null) {
                 dispatch(fetchConfirmedPatterns());
-            }else if(user.role === "ADMIN"){
+            } else if (user.role === "ADMIN") {
                 dispatch(fetchAllPatterns());
-            }else if(user.role === "USER"){
+            } else if (user.role === "USER") {
                 dispatch(fetchConfirmedPatterns());
-            }else{
+            } else {
                 dispatch(fetchConfirmedPatterns());
             }
             setOnlyUserPatterns(!value);
@@ -93,15 +93,15 @@ function Home() {
     }
 
     const fetchPatterns = () => {
-        if(onlyUserPatterns){
+        if (onlyUserPatterns) {
             dispatch(fetchUserPatterns());
-        }else if(user == null){
+        } else if (user == null) {
             dispatch(fetchConfirmedPatterns());
-        }else if(user.role === "ADMIN"){
+        } else if (user.role === "ADMIN") {
             dispatch(fetchAllPatterns());
-        }else if(user.role === "USER"){
+        } else if (user.role === "USER") {
             dispatch(fetchConfirmedPatterns());
-        }else{
+        } else {
             dispatch(fetchConfirmedPatterns());
         }
     }
@@ -124,12 +124,18 @@ function Home() {
                         <Grid container spacing={2} justify="center" className={classes.heroButtons}>
                             <Grid item key={"button1"}>
                                 <Link variant="contained" color={"primary"} to={"/build"}>
-                                    Create your own pattern
+                                    <Button variant="contained" color="primary">
+                                        <Typography>
+                                            Create your own pattern
+                                        </Typography>
+                                    </Button>
                                 </Link>
                             </Grid>
                             <Grid item key={"button2"}>
                                 <Link variant="outlined" color="primary" to={"/checkout"}>
-                                    Checkout
+                                    <Button variant="outlined" color="primary">
+                                        Checkout
+                                    </Button>
                                 </Link>
                             </Grid>
                             {user != null && <Grid item key={"button3"}>

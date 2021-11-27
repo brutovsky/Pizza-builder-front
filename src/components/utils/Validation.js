@@ -15,7 +15,7 @@ export const validatePassword = (password) =>
     if(password == ""){
         return "Password is required";
     }
-    else if (!(/^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!#$%&? "]).*$/.test(password)))
+    else if (!(/^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[-!#$%&?@ "]).*$/.test(password)))
     {
         return "Password must be min 8 symbols length and contain at least digit, letter, special char";
     }
