@@ -11,12 +11,8 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {
-    confirmPizzaPattern,
-} from "../../features/pizzaPatterns/PizzaPatterns";
-import {
-    addPatternToCart, fetchCart,
-} from "../../features/basket/basketSlice";
+import {confirmPizzaPattern,} from "../../features/pizzaPatterns/PizzaPatterns";
+import {addPatternToCart, fetchCart,} from "../../features/basket/basketSlice";
 import {useDispatch} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
 
@@ -75,15 +71,12 @@ export default function PizzaCard(props) {
         if (spicy) {
             labels += '🌶️'
         }
-        ;
         if (vegetarian && !vegan) {
             labels += '🥛'
         }
-        ;
         if ((vegan && !vegetarian) || (vegan && vegetarian)) {
             labels += '🥦'
         }
-        ;
         return labels;
     }
 

@@ -12,7 +12,7 @@ import IngredientGroupTabs from "./builderComponents/IngredientTabs";
 import pizza_bg from '../resources/images/pizza-bg.png'
 import IngredientInPizzaCard from "./builderComponents/IngredientInPizzaCard";
 
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import TextField from "@material-ui/core/TextField";
 import {
     fetchAllGroups,
@@ -21,12 +21,9 @@ import {
     selectIngredients,
 } from "../features/ingredients/Ingredients";
 
-import {
-    createPattern,
-    selectStatus
-} from "../features/pizzaPatterns/PizzaPatterns";
+import {createPattern, selectStatus} from "../features/pizzaPatterns/PizzaPatterns";
 import {selectUser} from "../features/auth/Auth";
-import {validateEmail, validateImageUrl} from "./utils/Validation";
+import {validateImageUrl} from "./utils/Validation";
 import {snack} from "./utils/CustomSnackBar";
 import {unwrapResult} from "@reduxjs/toolkit";
 
@@ -103,13 +100,18 @@ function PizzaBuilder() {
     const [validPizzaName, setValidPizzaName] = useState(true);
     const [validPizzaImage, setValidPizzaImage] = useState(true);
     const validate = () => {
-        const isValidName = pizzaName != '';
+        const isValidName = pizzaName !== '';
         setValidPizzaName(isValidName);
 
         const isValidIngrImage = validateImageUrl(pizzaImage) === true;
         setValidPizzaImage(isValidIngrImage);
 
-        return isValidName && isValidIngrImage;
+        const isValidIngredientsCount = ingredients.length > 0
+        if(!isValidIngredientsCount){
+            showSnack("error", "You can not create a pattern without any ingredients :/");
+        }
+
+        return isValidName && isValidIngrImage && isValidIngredientsCount;
     }
     //
 
@@ -226,7 +228,7 @@ function PizzaBuilder() {
                                             value={pizzaName}
                                             onChange={(event => setPizzaName(event.target.value))}
                                             helperText={
-                                                pizzaName == '' ? 'Pizza name is required' : ''
+                                                pizzaName === '' ? 'Pizza name is required' : ''
                                             }
                                             error={!validPizzaName}
                                         />
@@ -237,6 +239,7 @@ function PizzaBuilder() {
                                         variant={"outlined"}
                                         color={"primary"}
                                         fullWidth
+                                        autoFocus={true}
                                         className={classes.pizzaButton}
                                         onClick={e => createNewPattern()}
                                         disabled={status === "loading"}
@@ -252,7 +255,7 @@ function PizzaBuilder() {
                             </Container>
                             <Grid container spacing={3}>
                                 <Grid item xs={2}>
-                                    <img className={classes.pizzaImage} src={pizzaImage}/>
+                                    <img className={classes.pizzaImage} src={pizzaImage} alt={'NO IMAGE'}/>
                                 </Grid>
                                 <Grid item xs={10}>
                                     <TextField

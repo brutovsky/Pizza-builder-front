@@ -79,7 +79,8 @@ const pizzaPatternsSlice = createSlice({
             state.status = 'loading'
         },
         [createPattern.fulfilled]: (state, action) => {
-            Object.assign(state,  {...state, status : 'succeeded', patterns : [...state.patterns, action.payload.pattern]});
+            // TODO: When a pattern is created, receive this pattern with correct ingredients array
+            // Object.assign(state,  {...state, status : 'succeeded', patterns : [...state.patterns, action.payload.pattern]});
         },
         [createPattern.rejected]: (state, action) => {
             state.status = 'failed';
