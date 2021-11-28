@@ -158,7 +158,7 @@
   },
   "devDependencies": {
     "eslint-plugin-react-hooks": "^4.2.0",
-    "node-sass": "^6.0.1",
+    "node-sass": "^4.8.3",
     "sass-loader": "^10.2.0"
   }
 }
