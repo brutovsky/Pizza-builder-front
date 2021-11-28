@@ -255,7 +255,7 @@ export default function Header() {
                     {isPageWide700 ? 'Pizza Builder' : ''}
                 </Typography>
 
-                {isUserRole(user, "ADMIN") ? <BasketDialog/> : ''}
+                {isUserRole(user, "ADMIN") ? '' : <BasketDialog/>}
 
                 {makeNavigationSection()}
 
