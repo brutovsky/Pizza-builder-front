@@ -138,7 +138,7 @@ export default function BasketDialog(props) {
                     <Button variant={"outlined"} autoFocus onClick={handleClose} color="primary">
                         Go back to shopping
                     </Button>
-                    <Link autoFocus color="primary" to={"/checkout"}>
+                    <Link autoFocus color="primary" to={"/checkout"} className={'custom-link'}>
                         <Button variant={"contained"} color="primary">
                             Go to checkout
                         </Button>

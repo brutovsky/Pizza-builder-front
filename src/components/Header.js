@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {selectUser, signOut} from '../features/auth/Auth'
 import BasketDialog from "./basket/BasketDialog";
+// import Link from "@material-ui/core/Link";
 
 const SECTIONS_GUEST = [
     {title: 'Sign In', path: '/signin'},
@@ -57,14 +58,6 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.getContrastText(deepOrange[500]),
         backgroundColor: deepOrange[500],
     },
-    link: {
-        '&:hover': {
-            color: '#FFF'
-        },
-        '&:visited': {
-            color: '#FFF'
-        }
-    }
 }));
 
 export default function Header() {
@@ -86,7 +79,7 @@ export default function Header() {
     }
 
     const makeButtonLink = (path, title) => {
-        return <Link className={classes.link} to={path}>
+        return <Link className={'custom-link'} to={path}>
             <Button color={"inherit"} className={classes.menuButton}><Typography>{title}</Typography></Button>
         </Link>
     }
@@ -102,7 +95,7 @@ export default function Header() {
             <div>
                 {makeButtonLink("/home", "🍕Patterns")}
                 {makeButtonLink("/build", "🔨Build")}
-                <Link className={classes.link} to={'/userpage'}>
+                <Link className={'custom-link'} to={'/userpage'}>
                     <Button href={'/userpage'} key={'/userpage'}>
                     <span>
                         <Avatar className={classes.orange}>
@@ -131,7 +124,7 @@ export default function Header() {
         <AppBar position="static">
             <Toolbar>
 
-                <Link className={classes.link} to={"/home"}>
+                <Link className={'custom-link'} to={"/home"}>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <LocalPizza className={classes.icon}/>
                     </IconButton>

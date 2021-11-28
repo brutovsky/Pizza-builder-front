@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         minHeight: '79vh',
-    }
+    },
 }));
 
 function Home() {
@@ -145,7 +145,7 @@ function Home() {
                         </Typography>
                         <Grid container spacing={2} justify="center" className={classes.heroButtons}>
                             <Grid item key={"button1"}>
-                                <Link variant="contained" color={"primary"} to={"/build"}>
+                                <Link variant="contained" color={"primary"} to={"/build"} className={'custom-link'}>
                                     <Button variant="contained" color="primary">
                                         <Typography>
                                             Create your own pattern
@@ -154,7 +154,7 @@ function Home() {
                                 </Link>
                             </Grid>
                             <Grid item key={"button2"}>
-                                <Link variant="outlined" color="primary" to={"/checkout"}>
+                                <Link variant="outlined" color="primary" to={"/checkout"} className={'custom-link'}>
                                     <Button variant="outlined" color="primary">
                                         Checkout
                                     </Button>
