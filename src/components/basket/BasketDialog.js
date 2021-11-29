@@ -13,10 +13,11 @@ import {ShoppingBasket} from "@material-ui/icons";
 import List from "@material-ui/core/List";
 import PizzaListItem from "./PizzaListItem";
 import {useDispatch, useSelector} from "react-redux";
-import {selectPatterns, fetchCart} from "../../features/basket/basketSlice";
+import {fetchCart, selectPatterns, selectStatus} from "../../features/basket/basketSlice";
 import Tooltip from "@material-ui/core/Tooltip";
 import {selectUser} from "../../features/auth/Auth";
 import {Link} from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = (theme) => ({
     root: {
@@ -86,6 +87,8 @@ export default function BasketDialog(props) {
     const patterns = useSelector(selectPatterns)
     const user = useSelector(selectUser)
 
+    const status = useSelector(selectStatus)
+
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -107,9 +110,13 @@ export default function BasketDialog(props) {
             <Tooltip title={(patterns != null ? patterns.length : 0) + " items in the basket"}>
                 <Button color={"inherit"} onClick={handleClickOpen} className={classes.basket}>
                     {isPageWide700 ? <ShoppingBasket className={classes.basketIcon}/> : ''}
-                    <Typography className={classes.howManyText} variant={"h5"}>
-                        {patterns != null ? totalSum() : 0}$
-                    </Typography>
+                    {patterns.length === null || (patterns.length === 0 && status === 'loading') ?
+                        <CircularProgress color="inherit" size={20}/>
+                        :
+                        <Typography className={classes.howManyText} variant={"h5"}>
+                            {totalSum()}$
+                        </Typography>
+                    }
                 </Button>
             </Tooltip>}
             <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} fullWidth={true}>

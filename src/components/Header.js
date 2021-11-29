@@ -3,17 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {
-    ExitToApp,
-    LocalPizza,
-    PersonAdd,
-    Settings,
-    Build,
-    Storefront,
-    Receipt,
-    Category,
-    Eco
-} from "@material-ui/icons";
+import {Build, Category, Eco, ExitToApp, LocalPizza, Receipt, Storefront} from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -122,6 +112,9 @@ export default function Header() {
 
     const makeUserSection = () => {
         return <div>
+            {isUserRole(user, "ADMIN") ? makeButtonLink("/admin/ingredients", "🥑Ingredients") : ''}
+            {isUserRole(user,"ADMIN") ? makeButtonLink("/admin/groups", "🥩Groups") : ''}
+            {isUserRole(user,"ADMIN") ? makeButtonLink("/admin/orders", "📜Orders") : ''}
             {makeButtonLink("/home", "🍕Patterns")}
             {makeButtonLink("/build", "🔨Build")}
             <Link className={'custom-link'} to={'/userpage'}>
@@ -139,14 +132,6 @@ export default function Header() {
                 <ExitToApp className={classes.exitIcon}/>
             </Button>
         </div>
-    }
-
-    const makeAdminSection = () => {
-        return isUserRole(user, "ADMIN") ? <div>
-            {makeButtonLink("/admin/ingredients", "🥑Ingredients")}
-            {makeButtonLink("/admin/groups", "🥩Groups")}
-            {makeButtonLink("/admin/orders", "📜Orders")}
-        </div> : ''
     }
 
     const makeDropdownNavigation = () => {
@@ -175,32 +160,32 @@ export default function Header() {
                 </MenuItem>
                 <Divider/>
                 {isUserRole(user, "ADMIN") ? <div>
-                <MenuItem onClick={e => {
-                    goToPath("/admin/ingredients")
-                }}>
-                    <ListItemIcon>
-                        <Eco fontSize="small"/>
-                    </ListItemIcon>
-                    Ingredients
-                </MenuItem>
-                <MenuItem onClick={e => {
-                    goToPath("/admin/groups")
-                }}>
-                    <ListItemIcon>
-                        <Category fontSize="small"/>
-                    </ListItemIcon>
-                    Groups
-                </MenuItem>
-                <MenuItem onClick={e => {
-                    goToPath("/admin/orders")
-                }}>
-                    <ListItemIcon>
-                        <Receipt fontSize="small"/>
-                    </ListItemIcon>
-                    Orders
-                </MenuItem>
-                <Divider/>
-            </div> : ''}
+                    <MenuItem onClick={e => {
+                        goToPath("/admin/ingredients")
+                    }}>
+                        <ListItemIcon>
+                            <Eco fontSize="small"/>
+                        </ListItemIcon>
+                        Ingredients
+                    </MenuItem>
+                    <MenuItem onClick={e => {
+                        goToPath("/admin/groups")
+                    }}>
+                        <ListItemIcon>
+                            <Category fontSize="small"/>
+                        </ListItemIcon>
+                        Groups
+                    </MenuItem>
+                    <MenuItem onClick={e => {
+                        goToPath("/admin/orders")
+                    }}>
+                        <ListItemIcon>
+                            <Receipt fontSize="small"/>
+                        </ListItemIcon>
+                        Orders
+                    </MenuItem>
+                    <Divider/>
+                </div> : ''}
                 <MenuItem onClick={e => {
                     goToPath("/home")
                 }}>
@@ -230,15 +215,12 @@ export default function Header() {
     }
 
     const makeNavigationSection = () => {
-        return isPageWide400 ?
-            <div>
-                {makeAdminSection()}
-                {(user === null) ? makeGuestSection() : makeUserSection()}
-            </div>
-            :
-            <div>
-                {(user === null) ? makeGuestSection() : makeDropdownNavigation()}
-            </div>
+        return (user === null) ?
+            makeGuestSection() :
+            (isPageWide400 ?
+                    makeUserSection() :
+                    makeDropdownNavigation()
+            )
     }
 
     return (

@@ -25,8 +25,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {snack} from "../utils/CustomSnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import theme from "../Theme";
-import {ThemeProvider} from "@material-ui/styles";
+import {isStatusLoading} from "../../utils/Utils";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -170,13 +169,13 @@ export default function AdminIngredientGroups() {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            disabled={groupsStatus === "loading"}
+                            // disabled={groupsStatus === "loading"}
                             onClick={event => createNewGroup()}
                         >
                             Create new group
                         </Button>
                     </Grid>
-                    {groupsStatus === "loading" ?
+                    {groups === null || (groups.length === 0 && isStatusLoading(groupsStatus)) ?
                         <Grid
                             container
                             spacing={0}
@@ -191,7 +190,7 @@ export default function AdminIngredientGroups() {
                         :
                         <Container className={classes.listGroups}>
                             <List>
-                                {groups !== null && groups.map((group) => (
+                                {groups.map((group) => (
                                     <ListItem key={group.name}>
                                         <Typography>{group.label}</Typography>
                                         <ListItemText className={classes.listItemText}

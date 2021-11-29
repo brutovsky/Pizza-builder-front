@@ -142,5 +142,6 @@ export const basketSlice = createSlice({
 })
 
 export const selectPatterns = state => state.basket.patterns
+export const selectStatus = state => state.basket.status
 
 export default basketSlice.reducer

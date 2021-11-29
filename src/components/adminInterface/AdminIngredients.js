@@ -7,7 +7,7 @@ import Container from '@material-ui/core/Container';
 import Header from "../Header";
 import Footer from "../Footer";
 import TextField from "@material-ui/core/TextField";
-import {validateEmail, validateImageUrl, validatePassword} from "../utils/Validation";
+import {validateImageUrl} from "../utils/Validation";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
@@ -21,11 +21,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {
     createIngredient,
-    fetchAllIngredients,
+    deleteIngredient,
     fetchAllGroups,
+    fetchAllIngredients,
     selectGroups,
-    selectStatus,
-    selectIngredients, deleteGroup, deleteIngredient
+    selectIngredients,
+    selectStatus
 } from "../../features/ingredients/Ingredients";
 import {useDispatch, useSelector} from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
@@ -38,6 +39,7 @@ import CardActions from "@material-ui/core/CardActions";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {snack} from "../utils/CustomSnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {isStatusLoading} from "../../utils/Utils";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -289,12 +291,12 @@ export default function AdminIngredienst() {
                             variant="contained"
                             color="primary"
                             onClick={event => createNewIngredient()}
-                            disabled={status === "loading"}
+                            // disabled={status === "loading"}
                         >
                             Create
                         </Button>
                     </Grid>
-                    {status === "loading" ?
+                    {ingredients === null || (ingredients.length === 0 && isStatusLoading(status)) ?
                         <Grid
                             container
                             spacing={0}
@@ -309,7 +311,7 @@ export default function AdminIngredienst() {
                         :
                     <Container className={classes.listGroups} maxWidth="md">
                         <Grid container spacing={4}>
-                            {ingredients !== null && ingredients.map((ingr) => (
+                            {ingredients.map((ingr) => (
                                 <Card key={ingr.name} xs={12} sm={6} md={4} className={classes.ingrCard}>
                                     <CardActionArea>
                                         <CardMedia
