@@ -28,7 +28,6 @@ export default function PizzaListItem(props) {
     const dispatch = useDispatch()
 
     const incrementPattern = () => {
-        console.log(props.pizza)
         dispatch(increment({
             uuid: props.pizza.uuid,
             size: props.pizza.size,

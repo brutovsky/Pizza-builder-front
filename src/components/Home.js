@@ -21,6 +21,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import {Link} from "react-router-dom";
 import {snack} from "./utils/CustomSnackBar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
     heroContent: {
         backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(8, 0, 6),
+        padding: theme.spacing(8, 0, 0),
     },
     heroButtons: {
         marginTop: theme.spacing(4),
@@ -119,10 +120,10 @@ function Home() {
 
     const deletePatternCallback = (pizza, successful) => {
         console.log(pizza)
-        if(successful){
+        if (successful) {
             fetchPatterns()
             showSnack("success", "Pattern successfully deleted !");
-        }else{
+        } else {
             showSnack("error", "Something went wrong :/");
         }
     };
@@ -143,41 +144,55 @@ function Home() {
                         <Typography variant="h5" align="center" color="textSecondary" paragraph>
                             Choose the pizza you like and modify it to your tastes
                         </Typography>
-                        <Grid container spacing={2} justify="center" className={classes.heroButtons}>
-                            <Grid item key={"button1"}>
-                                <Link variant="contained" color={"primary"} to={"/build"} className={'custom-link'}>
-                                    <Button variant="contained" color="primary">
-                                        <Typography>
-                                            Create your own pattern
-                                        </Typography>
-                                    </Button>
-                                </Link>
+                            <Grid container spacing={2} justify="center" className={classes.heroButtons}>
+                                <Grid item key={"button1"}>
+                                    <Link variant="contained" color={"primary"} to={"/build"} className={'custom-link'}>
+                                        <Button variant="contained" color="primary">
+                                            <Typography>
+                                                Create your own pattern
+                                            </Typography>
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                                <Grid item key={"button2"}>
+                                    <Link variant="outlined" color="primary" to={"/checkout"} className={'custom-link'}>
+                                        <Button variant="outlined" color="primary">
+                                            Checkout
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                                {user != null && <Grid item key={"button3"}>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={onlyUserPatterns}
+                                                           onChange={e => onChangeOnlyUserPatterns()}
+                                                           name="Connfirmed"/>}
+                                        label="Show only my patterns"
+                                    />
+                                </Grid>}
                             </Grid>
-                            <Grid item key={"button2"}>
-                                <Link variant="outlined" color="primary" to={"/checkout"} className={'custom-link'}>
-                                    <Button variant="outlined" color="primary">
-                                        Checkout
-                                    </Button>
-                                </Link>
-                            </Grid>
-                            {user != null && <Grid item key={"button3"}>
-                                <FormControlLabel
-                                    control={<Checkbox checked={onlyUserPatterns}
-                                                       onChange={e => onChangeOnlyUserPatterns()}
-                                                       name="Connfirmed"/>}
-                                    label="Show only my patterns"
-                                />
-                            </Grid>}
-                        </Grid>
                     </Container>
                 </div>
+                {pizzaStatus === "loading" ?
+                    <Grid
+                        container
+                        spacing={0}
+                        direction="column"
+                        alignItems="center"
+                        justify="center"
+                    >
+                        <Grid item xs={3}>
+                            <CircularProgress color="secondary" size={100}/>
+                        </Grid>
+                    </Grid>
+                    :
                 <Container className={classes.cardGrid} maxWidth="md">
                     <Grid container spacing={4}>
                         {pizzaPatterns !== null && pizzaPatterns.map((pattern) => (
-                            <PizzaCard pattern={pattern} user={user} key={pattern.uuid} deletePatternCallback={deletePatternCallback}/>
+                            <PizzaCard pattern={pattern} user={user} key={pattern.uuid}
+                                       deletePatternCallback={deletePatternCallback}/>
                         ))}
                     </Grid>
-                </Container>
+                </Container>}
             </main>
             <Footer/>
         </React.Fragment>
