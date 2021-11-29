@@ -24,6 +24,9 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {snack} from "../utils/CustomSnackBar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import theme from "../Theme";
+import {ThemeProvider} from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -122,8 +125,8 @@ export default function AdminIngredientGroups() {
             <Header/>
             <main>
                 <Container className={classes.root} maxWidth="md">
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                        Create new group
+                    <Typography variant="h2" align="center" color="textPrimary" gutterBottom>
+                        Create New Group
                     </Typography>
                     {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                     <Grid container spacing={2}>
@@ -173,23 +176,37 @@ export default function AdminIngredientGroups() {
                             Create new group
                         </Button>
                     </Grid>
-                    <Container className={classes.listGroups}>
-                        <List>
-                            {groups !== null && groups.map((group) => (
-                                <ListItem key={group.name}>
-                                    <Typography>{group.label}</Typography>
-                                    <ListItemText className={classes.listItemText}
-                                                  primary={group.name}
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="delete" onClick={event => deleteG(group)}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Container>
+                    {groupsStatus === "loading" ?
+                        <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <Grid item xs={4}>
+                                <CircularProgress color="secondary" size={100} className={'circularProgress'}/>
+                            </Grid>
+                        </Grid>
+                        :
+                        <Container className={classes.listGroups}>
+                            <List>
+                                {groups !== null && groups.map((group) => (
+                                    <ListItem key={group.name}>
+                                        <Typography>{group.label}</Typography>
+                                        <ListItemText className={classes.listItemText}
+                                                      primary={group.name}
+                                        />
+                                        <ListItemSecondaryAction>
+                                            <IconButton edge="end" aria-label="delete"
+                                                        onClick={event => deleteG(group)}>
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Container>}
                 </Container>
             </main>
             <Footer/>

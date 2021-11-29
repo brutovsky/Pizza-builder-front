@@ -37,6 +37,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import {unwrapResult} from "@reduxjs/toolkit";
 import {snack} from "../utils/CustomSnackBar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -184,8 +185,8 @@ export default function AdminIngredienst() {
             <Header/>
             <main>
                 <Container className={classes.root}>
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                        Create new ingredient
+                    <Typography variant="h2" align="center" color="textPrimary" gutterBottom>
+                        Create New Ingredient
                     </Typography>
                     {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                     <Grid container spacing={1} className={classes.addIngr}>
@@ -293,6 +294,19 @@ export default function AdminIngredienst() {
                             Create
                         </Button>
                     </Grid>
+                    {status === "loading" ?
+                        <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <Grid item xs={4}>
+                                <CircularProgress color="secondary" size={100} className={'circularProgress'}/>
+                            </Grid>
+                        </Grid>
+                        :
                     <Container className={classes.listGroups} maxWidth="md">
                         <Grid container spacing={4}>
                             {ingredients !== null && ingredients.map((ingr) => (
@@ -322,7 +336,7 @@ export default function AdminIngredienst() {
                                 </Card>
                             ))}
                         </Grid>
-                    </Container>
+                    </Container>}
                 </Container>
             </main>
             <Footer/>

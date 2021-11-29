@@ -54,7 +54,7 @@ export default function AdminOrders() {
             <Header/>
             <main>
                 <Container className={classes.root} maxWidth="md">
-                    <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+                    <Typography variant="h2" align="center" color="textPrimary" gutterBottom>
                         Orders
                     </Typography>
                     {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}

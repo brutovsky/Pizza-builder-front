@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(2),
     },
     heroContent: {
-        backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(8, 0, 0),
     },
     heroButtons: {
@@ -181,7 +180,7 @@ function Home() {
                         justify="center"
                     >
                         <Grid item xs={3}>
-                            <CircularProgress color="secondary" size={100}/>
+                            <CircularProgress color="secondary" size={100} className={'circularProgress'}/>
                         </Grid>
                     </Grid>
                     :
