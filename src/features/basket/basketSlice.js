@@ -76,7 +76,8 @@ export const basketSlice = createSlice({
             state.status = 'loading'
         },
         [fetchCart.fulfilled]: (state, action) => {
-            Object.assign(state, {...initialState, status : 'succeeded', patterns : action.payload.patterns});
+            const sorted = action.payload.patterns.sort((a, b) => (a.size - b.size)).sort((a, b) => (a.name.localeCompare(b.name)))
+            Object.assign(state, {...initialState, status : 'succeeded', patterns : sorted});
         },
         [fetchCart.rejected]: (state, action) => {
             state.status = 'failed';

@@ -11,14 +11,14 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import {confirmPizzaPattern, deletePattern, fetchAllPatterns} from "../../features/pizzaPatterns/PizzaPatterns";
+import {confirmPizzaPattern, deletePattern} from "../../features/pizzaPatterns/PizzaPatterns";
 import {addPatternToCart, fetchCart,} from "../../features/basket/basketSlice";
 import {useDispatch} from "react-redux";
 import {unwrapResult} from "@reduxjs/toolkit";
-import {fetchAllIngredients} from "../../features/ingredients/Ingredients";
 import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
-import {snack} from "../utils/CustomSnackBar";
+import {isUserGuest} from "../../utils/Utils";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -77,6 +77,8 @@ export default function PizzaCard(props) {
     const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i => i.ingredient));
     const [confirmed, setConfirmed] = useState(props.pattern.confirmed);
 
+    const history = useHistory();
+
     const pizzaLabels = () => {
         let labels = '';
         const spicy = ingredients.find(i => i.spicy);
@@ -105,7 +107,7 @@ export default function PizzaCard(props) {
 
     const pizzaPrice = pizza.ingredients.reduce((a, b) => {
         return (a + b.ingredient.price * b.quantity)
-    }, 0);
+    }, 0) * pizzaSize;
 
     const confirmPattern = () => {
         dispatch(confirmPizzaPattern({
@@ -134,13 +136,17 @@ export default function PizzaCard(props) {
             })
     }
 
+    const goToSignIn = () => {
+        history.push("/signin");
+    }
+
     const addPizzaToBasket = () => {
-        console.log("ADD:")
-        console.log({
-            pattern: pizza.uuid,
-            amount: 1,
-            size: parseInt(pizzaSize),
-        })
+
+        if(isUserGuest(props.user)){
+            goToSignIn();
+            return;
+        }
+
         dispatch(addPatternToCart({
             pattern: pizza.uuid,
             amount: 1,

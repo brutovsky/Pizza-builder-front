@@ -119,7 +119,7 @@ export default function BasketDialog(props) {
                 <DialogContent dividers>
                     <List>
                         {patterns != null && patterns.map(p =>
-                            <PizzaListItem key={p.name} pizza={{
+                            <PizzaListItem key={p.name + p.size} pizza={{
                                 uuid: p.patternUuid,
                                 name: p.name,
                                 quantity: p.quantity,
