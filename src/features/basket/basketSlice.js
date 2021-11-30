@@ -66,18 +66,22 @@ export const placeOrder = createAsyncThunk(
     }
 )
 
-export const basketSlice = createSlice({
+const basketSlice = createSlice({
     name: 'basket',
     initialState,
     reducers: {
+        resetBasket: state => {
+            state.patterns = initialState.patterns;
+        },
     },
-    extraReducers:{
+    extraReducers: {
         [fetchCart.pending]: (state) => {
             state.status = 'loading'
         },
         [fetchCart.fulfilled]: (state, action) => {
             const sorted = action.payload.patterns.sort((a, b) => (a.size - b.size)).sort((a, b) => (a.name.localeCompare(b.name)))
-            Object.assign(state, {...initialState, status : 'succeeded', patterns : sorted});
+            console.log(sorted)
+            Object.assign(state, {...initialState, status: 'succeeded', patterns: sorted});
         },
         [fetchCart.rejected]: (state, action) => {
             state.status = 'failed';
@@ -141,7 +145,12 @@ export const basketSlice = createSlice({
     }
 })
 
+
+// Selectors
 export const selectPatterns = state => state.basket.patterns
 export const selectStatus = state => state.basket.status
+
+// Actions
+export const {resetBasket} = basketSlice.actions
 
 export default basketSlice.reducer

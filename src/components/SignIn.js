@@ -97,6 +97,8 @@ export default function SignIn() {
 
     const history = useHistory();
 
+    const state = useSelector((state) => state)
+
     const performSignIn = () => {
         if(validate()){
             dispatch(

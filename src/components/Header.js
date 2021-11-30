@@ -15,6 +15,7 @@ import deepOrange from "@material-ui/core/colors/deepOrange";
 import {useDispatch, useSelector} from "react-redux";
 
 import {selectUser, signOut} from '../features/auth/Auth'
+import {resetBasket} from '../features/basket/basketSlice'
 import BasketDialog from "./basket/BasketDialog";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -22,7 +23,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Tooltip from "@material-ui/core/Tooltip";
 import {isUserRole} from "../utils/Utils";
-// import Link from "@material-ui/core/Link";
 
 const SECTIONS_GUEST = [
     {title: 'Sign In', path: '/signin'},
@@ -95,6 +95,7 @@ export default function Header() {
 
     const performSignOut = () => {
         dispatch(signOut());
+        dispatch(resetBasket());
         history.push("/home");
     }
 
