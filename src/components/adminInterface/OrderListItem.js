@@ -103,7 +103,7 @@ export default function OrderListItem(props) {
                                         <TableCell component="th" scope="row">
                                             💵
                                         </TableCell>
-                                        <TableCell align="right">{order.totalPrice + '$'}</TableCell>
+                                        <TableCell align="right">{order.totalPrice.toFixed(2) + '$'}</TableCell>
                                     </TableRow>
                                     <TableRow
                                         key={"f3"}
