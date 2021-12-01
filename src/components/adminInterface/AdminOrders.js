@@ -18,6 +18,8 @@ import {Divider} from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import {fetchCart, increment} from "../../features/basket/basketSlice";
 import {unwrapResult} from "@reduxjs/toolkit";
+import {isStatusLoading} from "../../utils/Utils";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,23 +81,36 @@ export default function AdminOrders() {
                         Orders
                     </Typography>
                     {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
-                    <Container className={classes.listGroups}>
-                        <List>
-                            {orders !== null && sortedOrders()
-                                .map((order) => (
-                                <Grid>
-                                    <OrderListItem order={order} orderStatuses={orderStatuses}>
-                                    </OrderListItem>
-                                    <Box
-                                        sx={{
-                                            height: 20,
-                                        }}
-                                    />
-                                    <Divider></Divider>
-                                </Grid>
-                            ))}
-                        </List>
-                    </Container>
+                    {orders === null || (orders.length === 0 && isStatusLoading(status)) ?
+                        <Grid
+                            container
+                            spacing={0}
+                            direction="column"
+                            alignItems="center"
+                            justify="center"
+                        >
+                            <Grid item xs={4}>
+                                <CircularProgress color="secondary" size={100} className={'circularProgress'}/>
+                            </Grid>
+                        </Grid>
+                        :
+                        <Container className={classes.listGroups}>
+                            <List>
+                                {sortedOrders()
+                                    .map((order) => (
+                                        <Grid>
+                                            <OrderListItem order={order} orderStatuses={orderStatuses}>
+                                            </OrderListItem>
+                                            <Box
+                                                sx={{
+                                                    height: 20,
+                                                }}
+                                            />
+                                            <Divider></Divider>
+                                        </Grid>
+                                    ))}
+                            </List>
+                        </Container>}
                 </Container>
             </main>
             <Footer/>
