@@ -203,7 +203,7 @@ export default function PizzaCard(props) {
             </ButtonGroup>
             <CardActions className={classes.cardActions} disableSpacing={false}>
                 <Typography color={"secondary"} variant={"body1"}>
-                    <b><i>Price: {pizzaPrice}$</i></b>
+                    <b><i>Price: {pizzaPrice.toFixed(2)}$</i></b>
                 </Typography>
                 <Button size="large" color="primary" onClick={event => addPizzaToBasket()}>
                     Buy

@@ -140,7 +140,7 @@ export default function AdminIngredienst() {
     }
 
     // State
-    const [ingrImage, setIngrImage] = useState('https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg');
+    const [ingrImage, setIngrImage] = useState('https://');
     const [ingrGroup, setIngrGroup] = useState('');
     const [ingrName, setIngrName] = useState('melon');
     const [ingrPrice, setIngrPrice] = useState('300.0');
@@ -203,7 +203,7 @@ export default function AdminIngredienst() {
                                         id="image"
                                         label="Ingredient image"
                                         fullWidth
-                                        defaultValue="https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg"
+                                        defaultValue="https://"
                                         name="image"
                                         autoFocus
                                         onChange={e => setIngrImage(e.target.value)}

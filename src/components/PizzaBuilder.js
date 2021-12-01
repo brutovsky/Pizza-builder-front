@@ -118,7 +118,7 @@ function PizzaBuilder() {
 
     const [ingredients, setIngredients] = useState([]);
     const [pizzaName, setPizzaName] = useState('');
-    const [pizzaImage, setPizzaImage] = useState('https://basketbaba.com/wp-content/uploads/2017/11/Pineapple.jpg');
+    const [pizzaImage, setPizzaImage] = useState('https://');
 
     const addIngredient = (ingr) => {
         setIngredients(oldIngredients => [...oldIngredients, ingr]);
