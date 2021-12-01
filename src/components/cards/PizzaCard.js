@@ -74,7 +74,10 @@ export default function PizzaCard(props) {
     const [pizzaSize, setPizzaSize] = useState('1');
 
     const [pizza, setPizza] = useState(props.pattern);
-    const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i => i.ingredient));
+    const [ingredients, setIngredients] = useState(props.pattern.ingredients.map(i => {
+            return {...i.ingredient, quantity: i.quantity}
+        }
+    ));
     const [confirmed, setConfirmed] = useState(props.pattern.confirmed);
 
     const history = useHistory();
@@ -96,11 +99,11 @@ export default function PizzaCard(props) {
         return labels;
     }
 
-    const groupBy = function (xs, key) {
-        return xs.reduce(function (rv, x) {
+    const groupBy = function (ingredients, key) {
+        return ingredients.reduce(function (rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
             return rv;
-        }, {});
+        }, {})
     };
 
     const groupIngredients = groupBy(ingredients, 'groupName');
@@ -142,7 +145,7 @@ export default function PizzaCard(props) {
 
     const addPizzaToBasket = () => {
 
-        if(isUserGuest(props.user)){
+        if (isUserGuest(props.user)) {
             goToSignIn();
             return;
         }
@@ -174,7 +177,7 @@ export default function PizzaCard(props) {
                 </Typography>
                 {(props.user != null && props.user.role === 'ADMIN') &&
                 <FormControlLabel
-                    control={<Checkbox checked={confirmed} onChange={e => confirmPattern()} />}
+                    control={<Checkbox checked={confirmed} onChange={e => confirmPattern()}/>}
                     label="Confirmed"
                 />
                 }
@@ -185,7 +188,7 @@ export default function PizzaCard(props) {
                 <Divider/>
                 {Object.keys(groupIngredients).map((key) =>
                     <Typography key={key}
-                        variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i => i.name).join(', ')}</b></span></Typography>
+                                variant={"body2"}><span><b>{groupIngredients[key][0].groupLabel} {groupIngredients[key].map(i => i.quantity + 'x' + i.name).join(', ')}</b></span></Typography>
                 )}
                 <Divider/>
             </CardContent>
@@ -209,7 +212,7 @@ export default function PizzaCard(props) {
                     <IconButton edge="end" aria-label="delete" onClick={event => deletePizzaPattern()}>
                         <DeleteIcon/>
                     </IconButton>
-                    :""}
+                    : ""}
             </CardActions>
 
         </Card>

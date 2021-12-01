@@ -23,6 +23,13 @@ import {Link} from "react-router-dom";
 import {snack} from "./utils/CustomSnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {isStatusLoading} from "../utils/Utils";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Box from "@material-ui/core/Box";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -85,6 +92,17 @@ function Home() {
 
     const [onlyUserPatterns, setOnlyUserPatterns] = useState(false);
 
+    const [chosenLabels, updateChosenLabels] = React.useState([]);
+
+    const handleLabelChange = (newLabel) => {
+        if (newLabel === '') {
+            updateChosenLabels([]);
+        } else if (chosenLabels.includes(newLabel)) {
+            updateChosenLabels(chosenLabels.filter(label => label !== newLabel))
+        } else
+            updateChosenLabels([...chosenLabels, newLabel]);
+    };
+
     const onChangeOnlyUserPatterns = () => {
         const value = onlyUserPatterns;
         if (!value) {
@@ -102,6 +120,30 @@ function Home() {
             }
             setOnlyUserPatterns(!value);
         }
+    }
+
+    const patternLabelsMatch = (pattern, labels) => {
+        if (labels.length <= 0) return true
+        let patternLabels = [];
+
+        const ingredients = pattern.ingredients.map(i => i.ingredient);
+        console.log("HERE")
+        console.log(ingredients)
+        const spicy = ingredients.find(i => i.spicy);
+        const vegetarian = ingredients.every(i => i.vegetarian);
+        const vegan = ingredients.every(i => i.vegan);
+        if (spicy) {
+            patternLabels.push('spicy')
+        }
+        if (vegetarian && !vegan) {
+            patternLabels.push('milk')
+        }
+        if ((vegan && !vegetarian) || (vegan && vegetarian)) {
+            patternLabels.push('vegan')
+        }
+        let difference = labels.filter(x => patternLabels.includes(x));
+        console.log(difference)
+        return patternLabels.length !== 0 && difference.length !== 0;
     }
 
     const fetchPatterns = () => {
@@ -161,14 +203,40 @@ function Home() {
                                     </Button>
                                 </Link>
                             </Grid>
-                            {user != null && <Grid item key={"button3"}>
-                                <FormControlLabel
-                                    control={<Checkbox checked={onlyUserPatterns}
-                                                       onChange={e => onChangeOnlyUserPatterns()}
-                                                       name="Connfirmed"/>}
-                                    label="Show only my patterns"
-                                />
-                            </Grid>}
+                            <Grid item key={"button3"} container spacing={5} justify="center">
+                                <Grid xs={1}/>
+                                <Grid item xs={6} sm={4}>
+                                    <ButtonGroup variant="outlined" color="primary"
+                                                 aria-label="contained primary button group"
+                                                 className={classes.cardActions}>
+                                        <Button variant={chosenLabels.length === 0 ? 'contained' : 'outlined'}
+                                                onClick={e => handleLabelChange('')}
+                                                key={'all'}>🍕</Button>
+                                        <Button variant={chosenLabels.includes('spicy') ? 'contained' : 'outlined'}
+                                                onClick={e => handleLabelChange('spicy')}
+                                                key={'spicy'}>🌶️</Button>
+                                        <Button variant={chosenLabels.includes('milk') ? 'contained' : 'outlined'}
+                                                onClick={e => handleLabelChange('milk')}
+                                                key={'milk'}>🥛</Button>
+                                        <Button variant={chosenLabels.includes('vegan') ? 'contained' : 'outlined'}
+                                                onClick={e => handleLabelChange('vegan')}
+                                                key={'vegan'}>🥦</Button>
+                                    </ButtonGroup>
+                                </Grid>
+                                <Grid xs={1}>
+
+                                </Grid>
+                                {user != null &&
+                                <Grid item xs={6} justify="center">
+                                    <FormControlLabel
+                                        control={<Checkbox checked={onlyUserPatterns}
+                                                           onChange={e => onChangeOnlyUserPatterns()}
+                                                           name="Connfirmed"/>}
+                                        label="Show only my patterns"
+                                    />
+                                </Grid>
+                                }
+                            </Grid>
                         </Grid>
                     </Container>
                 </div>
@@ -187,10 +255,14 @@ function Home() {
                     :
                     <Container className={classes.cardGrid} maxWidth="md">
                         <Grid container spacing={4}>
-                            {pizzaPatterns.map((pattern) => (
-                                <PizzaCard pattern={pattern} user={user} key={pattern.uuid}
-                                           deletePatternCallback={deletePatternCallback}/>
-                            ))}
+                            {pizzaPatterns
+                                .filter((pattern) => {
+                                    return patternLabelsMatch(pattern, chosenLabels)
+                                })
+                                .map((pattern) => (
+                                    <PizzaCard pattern={pattern} user={user} key={pattern.uuid}
+                                               deletePatternCallback={deletePatternCallback}/>
+                                ))}
                         </Grid>
                     </Container>}
             </main>
