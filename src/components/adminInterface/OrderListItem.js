@@ -88,7 +88,7 @@ export default function OrderListItem(props) {
                             <Table sx={{minWidth: 700, maxWidth: 700}} aria-label="simple table">
                                 <TableBody>
                                     <TableRow
-                                        key={"f"}
+                                        key={"f1"}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
@@ -110,6 +110,24 @@ export default function OrderListItem(props) {
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
+                                            📱
+                                        </TableCell>
+                                        <TableCell align="right">{order.userPhone}</TableCell>
+                                    </TableRow>
+                                    <TableRow
+                                        key={"f4"}
+                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            📧
+                                        </TableCell>
+                                        <TableCell align="right">{order.userEmail}</TableCell>
+                                    </TableRow>
+                                    <TableRow
+                                        key={"f5"}
+                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    >
+                                        <TableCell component="th" scope="row">
                                             <PersonPinCircle/>
                                         </TableCell>
                                         <TableCell align="right">
@@ -128,7 +146,7 @@ export default function OrderListItem(props) {
                                         </TableCell>
                                     </TableRow>
                                     <TableRow
-                                        key={"f4"}
+                                        key={"f6"}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
@@ -151,7 +169,7 @@ export default function OrderListItem(props) {
                                         </TableCell>
                                     </TableRow>
                                     <TableRow
-                                        key={"f5"}
+                                        key={"f7"}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell component="th" scope="row">
