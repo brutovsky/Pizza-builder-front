@@ -8,11 +8,16 @@ import Footer from "../Footer";
 import List from "@material-ui/core/List";
 import {
     selectStatus,
-    selectOrders, fetchAllOrders
+    selectOrders, fetchAllOrders, fetchAllStatuses, selectOrderStatuses
 } from "../../features/orders/Orders";
 import {useDispatch, useSelector} from "react-redux";
 import {snack} from "../utils/CustomSnackBar";
 import OrderListItem from "./OrderListItem";
+import Grid from "@material-ui/core/Grid";
+import {Divider} from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import {fetchCart, increment} from "../../features/basket/basketSlice";
+import {unwrapResult} from "@reduxjs/toolkit";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,11 +47,27 @@ export default function AdminOrders() {
         dispatch(fetchAllOrders());
     }
 
-    useEffect(() => fetchOrders(), []);
+    const fetchStatuses = () => {
+        dispatch(fetchAllStatuses());
+    }
+
+    // Effects
+    useEffect(() => {
+        fetchOrders();
+        fetchStatuses();
+    }, []);
 
     const dispatch = useDispatch();
     const status = useSelector(selectStatus);
     const orders = useSelector(selectOrders);
+    const orderStatuses = useSelector(selectOrderStatuses);
+
+    const sortedOrders = () => {
+        let arrayForSort = [...orders]
+        return arrayForSort.sort((a, b) => {
+            return (a.checkId - b.checkId)
+        })
+    }
 
     return (
         <React.Fragment>
@@ -60,9 +81,18 @@ export default function AdminOrders() {
                     {snack(snackOpen, setSnackOpen, snackSeverity, snackText)}
                     <Container className={classes.listGroups}>
                         <List>
-                            {orders !== null && orders.map((order) => (
-                                <OrderListItem order={order}>
-                                </OrderListItem>
+                            {orders !== null && sortedOrders()
+                                .map((order) => (
+                                <Grid>
+                                    <OrderListItem order={order} orderStatuses={orderStatuses}>
+                                    </OrderListItem>
+                                    <Box
+                                        sx={{
+                                            height: 20,
+                                        }}
+                                    />
+                                    <Divider></Divider>
+                                </Grid>
                             ))}
                         </List>
                     </Container>
