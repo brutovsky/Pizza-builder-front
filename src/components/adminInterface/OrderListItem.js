@@ -112,7 +112,7 @@ export default function OrderListItem(props) {
                                         <TableCell component="th" scope="row">
                                             📱
                                         </TableCell>
-                                        <TableCell align="right">{order.userPhone}</TableCell>
+                                        <TableCell align="right">{order.userPhone !== '' ? order.userPhone : '-'}</TableCell>
                                     </TableRow>
                                     <TableRow
                                         key={"f4"}
